@@ -1,16 +1,17 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>국가공인 지능형홈관리사 학습 시뮬레이터 v5.10-public-r1</title>
+<title>국가공인 지능형홈관리사 학습 시뮬레이터 v260729</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/mobile-drag-drop@2.3.0-rc.2/index.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>MobileDragDrop.polyfill({dragImageTranslateOverride: MobileDragDrop.scrollBehaviourDragImageTranslateOverride});</script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=JetBrains+Mono:wght@500;800&family=Caveat:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=JetBrains+Mono:wght@500;800&display=swap');
 
 /* ── 기본 ── */
 html,body{height:100%;margin:0;}
@@ -18,7 +19,8 @@ body{font-family:'Noto Sans KR',sans-serif;background:#f8fafd;color:#1e293b;-web
 .jm{font-family:'JetBrains Mono',monospace;}
 
 /* ── 소개 페이지 ── */
-#page-intro{display:flex;flex-direction:column;height:100vh;overflow:hidden;background:#f8fafd;}
+#page-intro{display:flex;flex-direction:column;height:100vh;overflow:hidden;background:#f8fafd;--intro-header-h:62px;--intro-vh:calc(100vh - var(--intro-header-h));}
+/* --intro-header-h 는 로드/리사이즈 시 JS가 실제 헤더 높이로 갱신 */
 .intro-phase{display:none;flex-direction:column;flex:1;overflow-y:auto;}
 .intro-phase.active{display:flex;}
 .nav-dot{width:10px;height:10px;border-radius:50%;background:#cbd5e1;transition:all .3s;cursor:pointer;}
@@ -39,6 +41,13 @@ body{font-family:'Noto Sans KR',sans-serif;background:#f8fafd;color:#1e293b;-web
 .intro-tab{cursor:pointer;transition:all .25s;border-bottom:4px solid transparent;padding-bottom:.875rem;}
 .intro-tab.active{color:#2563eb!important;border-bottom-color:#2563eb!important;font-weight:900;}
 .t18-part{transition:all .6s ease;}
+/* C-1: 레이어 선택 시 해당 기기 은은한 강조 (1회, 시선 유도) */
+@keyframes t18PartCue{
+  0%{transform:translate(-50%,-50%) scale(1);}
+  35%{transform:translate(-50%,-50%) scale(1.28);box-shadow:0 0 16px 4px rgba(59,130,246,.55),0 4px 12px rgba(0,0,0,.2);}
+  100%{transform:translate(-50%,-50%) scale(1);}
+}
+.t18-part.t18-cue{animation:t18PartCue 1.1s cubic-bezier(0.34,1.2,0.64,1) both;z-index:60!important;}
 .t18-part.state-off{filter:grayscale(85%) brightness(.7)!important;}
 .t18-part.state-on{filter:brightness(1.2)!important;}
 /* 번호 뱃지 - 부모 filter 영향 받지 않게 */
@@ -244,7 +253,7 @@ input[type="range"]{accent-color:#2563eb;}
   display:none; /* 비활성 시 */
 }
 #intro-phase-1.intro-phase.active{
-  display:block; overflow-y:auto; height:100vh;
+  display:block; overflow-y:auto; flex:1 1 0%; min-height:0;
   scroll-snap-type:y mandatory;
   font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
   letter-spacing:-.02em; font-size:1.18rem; line-height:1.7;
@@ -283,9 +292,9 @@ input[type="range"]{accent-color:#2563eb;}
 #intro-phase-1 .mono-label { font-family:var(--mono); font-weight:700; text-transform:uppercase; letter-spacing:.22em; font-size:.82rem; }
 
 /* ============================================================ 1. HERO ============================================================ */
-#intro-phase-1 .hero { height:200vh; scroll-snap-align:start; }
+#intro-phase-1 .hero { height:calc(var(--intro-vh) * 2); scroll-snap-align:start; }
 #intro-phase-1 .hero-pin {
-  position:sticky; top:0; height:100vh; display:flex; align-items:center; padding-bottom:6rem; overflow:hidden;
+  position:sticky; top:0; height:var(--intro-vh); display:flex; align-items:center; padding-bottom:6rem; overflow:hidden;
   color:#e2e8f0;
   background:
     radial-gradient(80% 60% at 75% 15%, rgba(124,58,237,.30), transparent 60%),
@@ -308,13 +317,13 @@ input[type="range"]{accent-color:#2563eb;}
 }
 #intro-phase-1 .hero h1 em { font-style:normal; color:#c4b5fd; }
 #intro-phase-1 .hero .sub { margin-top:2rem; color:#94a3b8; font-size:clamp(1.05rem,1.5vw,1.25rem); max-width:none; font-weight:400; }
-#intro-phase-1 .scroll-cue { position:absolute; bottom:3rem; left:50%; transform:translateX(-50%); color:#c4b5fd;
+#intro-phase-1 .scroll-cue { position:absolute; bottom:1.75rem; left:50%; transform:translateX(-50%); color:#c4b5fd;
   font-family:var(--mono); font-size:1.05rem; font-weight:800; letter-spacing:.45em; text-transform:uppercase; display:flex; flex-direction:column; align-items:center; gap:.9rem; z-index:5; animation:scrollCueBlink 2s ease-in-out infinite; pointer-events:none; }
 #intro-phase-1 .scroll-cue .line { width:2px; height:56px; background:linear-gradient(#a5b4fc,transparent); }
 
 /* ============================================================ 2. ORCHESTRATION — the heart (rebuilt) ============================================================ */
-#intro-phase-1 .orchestra { position:relative; height:200vh; background:var(--bg); scroll-snap-align:start; }
-#intro-phase-1 .stage { position:sticky; top:0; height:100vh; overflow:hidden; }
+#intro-phase-1 .orchestra { position:relative; height:calc(var(--intro-vh) * 2); background:var(--bg); scroll-snap-align:start; }
+#intro-phase-1 .stage { position:sticky; top:0; height:var(--intro-vh); overflow:hidden; }
 #intro-phase-1 .stage-head { position:absolute; top:clamp(2.4rem,7vh,4.5rem); left:0; right:0; text-align:center; padding-inline:var(--gutter); z-index:6; }
 #intro-phase-1 .stage-head .eyebrow { color:var(--blue-600); margin-bottom:.9rem; }
 #intro-phase-1 .stage-head h2 { font-size:clamp(2rem,3.8vw,3rem); max-width:22ch; margin:0 auto; }
@@ -358,8 +367,8 @@ input[type="range"]{accent-color:#2563eb;}
 #intro-phase-1 .converge-caption p b { color:var(--t-intel); }
 
 /* ============================================================ 3. OPPORTUNITY ============================================================ */
-#intro-phase-1 .opportunity { height:200vh; scroll-snap-align:start; }
-#intro-phase-1 .opp-pin { position:sticky; top:0; height:100vh; display:grid; align-content:center; background:var(--bg); border-top:1px solid var(--line-soft); padding-block:clamp(3rem,8vh,6rem); overflow:hidden; }
+#intro-phase-1 .opportunity { height:calc(var(--intro-vh) * 2); scroll-snap-align:start; }
+#intro-phase-1 .opp-pin { position:sticky; top:0; height:var(--intro-vh); display:grid; align-content:center; background:var(--bg); border-top:1px solid var(--line-soft); padding-block:clamp(3rem,8vh,6rem); overflow:hidden; }
 #intro-phase-1 .opp-lead { max-width:none; }
 #intro-phase-1 .opp-lead .eyebrow { color:var(--blue-600); margin-bottom:1.4rem; }
 #intro-phase-1 .opp-lead h2 { font-size:clamp(1.7rem,3.2vw,2.7rem); line-height:1.5; max-width:none; }
@@ -380,7 +389,7 @@ input[type="range"]{accent-color:#2563eb;}
 #intro-phase-1 .man-sub { margin-top:1.4rem; color:var(--ink-500); font-size:clamp(1.05rem,1.6vw,1.25rem); font-weight:500; max-width:none; margin-inline:auto; }
 
 /* ============================================================ 4. FIRST STEP ============================================================ */
-#intro-phase-1 .firststep { min-height:100vh; scroll-snap-align:start; display:flex; align-items:center; justify-content:center; }
+#intro-phase-1 .firststep { min-height:var(--intro-vh); scroll-snap-align:start; display:flex; align-items:center; justify-content:center; }
 #intro-phase-1 .fs-pin { width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--bg); border-top:1px solid var(--line-soft); padding-top:8vh; padding-bottom:8vh; }
 #intro-phase-1 .fs-inner { max-width:900px; margin:0 auto; text-align:center; padding-inline:var(--gutter); width:100%; }
 #intro-phase-1 .cert-card { position:relative; background:var(--card); border:1.5px solid var(--line-soft); border-radius:24px;
@@ -411,7 +420,7 @@ input[type="range"]{accent-color:#2563eb;}
 
 
 /* ============ 3. 공간의 진화 + 시장 차트 ============ */
-#intro-phase-1 .evolve{ scroll-snap-align:start; min-height:100vh; display:flex; align-items:center; justify-content:center; padding-block:clamp(3rem,7vw,5rem); background:var(--bg); width:100%; }
+#intro-phase-1 .evolve{ scroll-snap-align:start; min-height:var(--intro-vh); display:flex; align-items:center; justify-content:center; padding-block:clamp(3rem,7vw,5rem); background:var(--bg); width:100%; }
 #intro-phase-1 .evolve-pin{ }
 #intro-phase-1 .evolve .wrap{ max-width:1400px; width:100%; margin:0 auto; padding-inline:60px; }
 #intro-phase-1 .evolve-head{ margin-bottom:2.4rem; text-align:center; }
@@ -480,7 +489,7 @@ input[type="range"]{accent-color:#2563eb;}
     <div class="flex items-center gap-4 flex-wrap">
       <h1 class="text-lg md:text-xl font-extrabold text-slate-800 tracking-tighter italic flex items-baseline gap-3">
         <span><i class="fas fa-microchip mr-2 text-blue-600"></i><span class="text-red-600">국가공인</span> 지능형홈관리사 학습 시뮬레이터</span>
-        <span class="text-[10px] font-black text-sky-500 jm tracking-widest">release. v5.10-public-r1</span>
+        <span class="text-[10px] font-black text-sky-500 jm tracking-widest">release. v260729</span>
       </h1>
     </div>
     <div class="flex items-center gap-3">
@@ -677,7 +686,7 @@ input[type="range"]{accent-color:#2563eb;}
           <i class="fas fa-arrow-left"></i> 이전
         </button>
         <button onclick="introChangePage(3)"
-          class="px-10 py-3.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-sm tracking-tight transition-all flex items-center justify-center gap-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.05),0_4px_12px_rgba(37,99,235,0.2)] hover:shadow-[0_1px_2px_rgba(0,0,0,0.05),0_8px_20px_rgba(37,99,235,0.3)] hover:translate-y-[-1px] active:translate-y-[0px] group">
+          class="px-10 py-3.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-[15px] tracking-tight transition-all flex items-center justify-center gap-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.05),0_4px_12px_rgba(37,99,235,0.2)] hover:shadow-[0_1px_2px_rgba(0,0,0,0.05),0_8px_20px_rgba(37,99,235,0.3)] hover:translate-y-[-1px] active:translate-y-[0px] group">
           <i class="fas fa-id-card"></i> 국가공인 지능형홈관리사 소개
           <i class="fas fa-arrow-right group-hover:translate-x-1.5 transition-transform"></i>
         </button>
@@ -780,7 +789,7 @@ input[type="range"]{accent-color:#2563eb;}
           <i class="fas fa-arrow-left"></i> 이전
         </button>
         <button onclick="introChangePage(4)"
-          class="px-10 py-3.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-sm tracking-tight transition-all flex items-center justify-center gap-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.05),0_4px_12px_rgba(37,99,235,0.2)] hover:shadow-[0_1px_2px_rgba(0,0,0,0.05),0_8px_20px_rgba(37,99,235,0.3)] hover:translate-y-[-1px] active:translate-y-[0px] group">
+          class="px-10 py-3.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-[15px] tracking-tight transition-all flex items-center justify-center gap-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.05),0_4px_12px_rgba(37,99,235,0.2)] hover:shadow-[0_1px_2px_rgba(0,0,0,0.05),0_8px_20px_rgba(37,99,235,0.3)] hover:translate-y-[-1px] active:translate-y-[0px] group">
           <i class="fas fa-microchip"></i> 학습 시뮬레이터 시작하기
           <i class="fas fa-arrow-right group-hover:translate-x-1.5 transition-transform"></i>
         </button>
@@ -836,7 +845,7 @@ input[type="range"]{accent-color:#2563eb;}
           <div class="bg-white px-8 py-6 rounded-[2rem] border border-slate-100 shadow-[0_1px_3px_rgba(0,0,0,0.02),0_12px_36px_rgba(149,157,165,0.08)] border-t-[6px] border-t-slate-700 flex flex-col flex-1 overflow-hidden">
             <div class="border-b border-slate-100 pb-2 mb-2 flex-shrink-0">
               <h3 class="text-xl font-black uppercase tracking-[.15em] text-slate-800 jm flex items-center gap-2"><i class="fas fa-layer-group text-blue-600 text-lg"></i>Architecture Layers</h3>
-              <p class="text-slate-500 text-[14px] font-normal mt-0.5">레이어를 선택하여 학습 시뮬레이터를 시작하십시오</p>
+              <p class="text-slate-500 text-sm font-normal mt-0.5">레이어를 선택하여 학습 시뮬레이터를 시작하십시오</p>
             </div>
             <div class="flex flex-col gap-3 flex-1 overflow-y-auto overflow-x-visible px-1 -mx-1 py-1">
               <!-- Layer 0 · 통합 설계 (가로형 콤팩트) -->
@@ -850,7 +859,7 @@ input[type="range"]{accent-color:#2563eb;}
                 </div>
                 <div class="border-t border-slate-100 pt-1.5 mt-1.5">
                   <p class="text-[13px] font-normal text-slate-500 leading-relaxed">주거 공간 지능형홈 시스템 전반의 구조와 설계 원리 학습</p>
-                  <p class="text-[12px] text-slate-500 font-bold mt-1">시뮬레이터 시작 →</p>
+                  <p class="text-xs text-slate-500 font-bold mt-1">시뮬레이터 시작 →</p>
                 </div>
               </div>
 
@@ -865,7 +874,7 @@ input[type="range"]{accent-color:#2563eb;}
                 </div>
                 <div class="border-t border-slate-100 pt-1.5 mt-1.5">
                   <p class="text-[13px] font-normal text-slate-500 leading-relaxed">전기 기초 이론 · 배선 상태 진단 · 조명 회로 설계 · 전원장치(SMPS) 계산</p>
-                  <p class="text-[12px] text-amber-600 font-bold mt-1">과업 1-1 · 1-2 · 1-3 · 1-4 →</p>
+                  <p class="text-xs text-amber-600 font-bold mt-1">과업 1-1 · 1-2 · 1-3 · 1-4 →</p>
                 </div>
               </div>
 
@@ -880,7 +889,7 @@ input[type="range"]{accent-color:#2563eb;}
                 </div>
                 <div class="border-t border-slate-100 pt-1.5 mt-1.5">
                   <p class="text-[13px] font-normal text-slate-500 leading-relaxed">공간별 감지 센서 최적 배치 및 사용자 맞춤형 스마트 기기 선정</p>
-                  <p class="text-[12px] text-emerald-600 font-bold mt-1">과업 2-1 · 2-2 · 2-3 →</p>
+                  <p class="text-xs text-emerald-600 font-bold mt-1">과업 2-1 · 2-2 · 2-3 →</p>
                 </div>
               </div>
 
@@ -895,7 +904,7 @@ input[type="range"]{accent-color:#2563eb;}
                 </div>
                 <div class="border-t border-slate-100 pt-1.5 mt-1.5">
                   <p class="text-[13px] font-normal text-slate-500 leading-relaxed">통신 프로토콜 이해 · 무선 채널 간섭 · AP·메시 네트워크 · 허브 연결 설정</p>
-                  <p class="text-[12px] text-blue-600 font-bold mt-1">과업 3-1 · 3-2 · 3-3 · 3-4 →</p>
+                  <p class="text-xs text-blue-600 font-bold mt-1">과업 3-1 · 3-2 · 3-3 · 3-4 →</p>
                 </div>
               </div>
 
@@ -910,7 +919,7 @@ input[type="range"]{accent-color:#2563eb;}
                 </div>
                 <div class="border-t border-slate-100 pt-1.5 mt-1.5">
                   <p class="text-[13px] font-normal text-slate-500 leading-relaxed">AI 기술 체계 이해 · AI 자동화 시나리오 구현 · AI 스택 설계</p>
-                  <p class="text-[12px] text-violet-600 font-bold mt-1">과업 4-1 · 4-2 · 4-3 · 4-4 · 4-5 · 4-6 →</p>
+                  <p class="text-xs text-violet-600 font-bold mt-1">과업 4-1 · 4-2 · 4-3 · 4-4 · 4-5 · 4-6 →</p>
                 </div>
               </div>
             </div>
@@ -930,7 +939,7 @@ input[type="range"]{accent-color:#2563eb;}
       <div id="intro-dot-4" class="nav-dot" onclick="introChangePage(4)"></div>
     </div>
     <div class="flex flex-col items-end gap-0.5">
-      <span class="text-slate-500" style="font-family:'Caveat',cursive;font-size:17px;font-weight:600;">Designed by Prof. Chuljae Kim</span>
+      <span class="text-[12px] text-slate-500 font-medium tracking-tight">설계·개발 &nbsp;김철재</span>
       <span class="text-[10px] text-slate-400 font-normal tracking-wide">© 2026 ICQA · 학습 참고용 · 무단 복제·배포·수정 금지 — 위변조 의심 시 협회 공식 정본과 대조 후 신고</span>
     </div>
   </footer>
@@ -964,7 +973,7 @@ input[type="range"]{accent-color:#2563eb;}
         <div id="t18-mode-guide" class="mt-3 p-4 rounded-xl border border-violet-100 bg-white" style="display:none;border-left:4px solid #7c3aed;background:rgba(124,58,237,.02);"></div>
       </div>
       <div class="px-4 py-2 border-t border-slate-100 mt-auto">
-        <span class="text-[9px] text-slate-400 font-normal tracking-wide leading-tight block">© 2026 ICQA · 학습 참고용<br>위변조 의심 시 정본 대조·신고</span>
+        <span class="text-[11px] text-slate-400 font-normal tracking-wide leading-tight block">© 2026 ICQA · 학습 참고용<br>위변조 의심 시 정본 대조·신고</span>
       </div>
     </aside>
 
@@ -975,7 +984,7 @@ input[type="range"]{accent-color:#2563eb;}
       <div class="main-header">
         <div class="flex-1 min-w-0">
           <h2 id="taskTitle" class="text-[22px] font-extrabold text-slate-800 tracking-tight leading-tight"></h2>
-          <p id="taskSub" class="text-[14px] text-slate-500 mt-1 font-normal leading-snug"></p>
+          <p id="taskSub" class="text-sm text-slate-500 mt-1 font-normal leading-snug"></p>
         </div>
         <button onclick="closeSim()" class="flex items-center gap-2 px-5 py-2.5 bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-800 rounded-xl font-bold text-sm transition-all border border-slate-200/60 shadow-[0_1px_2px_rgba(0,0,0,0.02)] ml-4 flex-shrink-0">
           <i class="fas fa-arrow-left"></i> 이전 (메인으로)
@@ -995,7 +1004,7 @@ input[type="range"]{accent-color:#2563eb;}
             <div class="task-banner border-slate-300 bg-slate-50" style="padding:14px 16px;">
               <div class="flex gap-3 items-center">
                 <div class="flex-1 text-sm font-normal text-slate-700 leading-snug">
-                  <strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 도면에는 '나의 집'에 적용될 20여 종, 35개의 필수 디바이스가 집약되어 있습니다. 우측의 시나리오와 4계층(Layer 1~4) 기술을 선택하여, 각 요소가 어떻게 유기적으로 연결되어 작동하는지 그 통합 체계를 분석하고 이해하십시오.</strong>
+                  <strong class="font-bold text-slate-800 text-sm">[실습 과제] 도면에는 '나의 집'에 적용될 20여 종, 36개의 필수 디바이스가 집약되어 있습니다. 우측의 시나리오와 4계층(Layer 1~4) 기술을 선택하여, 각 요소가 어떻게 유기적으로 연결되어 작동하는지 그 통합 체계를 분석하고 이해하십시오.</strong>
                 </div>
 
               </div>
@@ -1329,11 +1338,11 @@ input[type="range"]{accent-color:#2563eb;}
             <div class="task-banner border-slate-300 bg-slate-50">
               
               <div class="text-[13px] font-normal text-slate-700 leading-relaxed space-y-1.5">
-                <p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 배선 결함은 기기 오작동과 화재의 직접 원인입니다. 지능형홈 기기 설치 전 분전반 전압 진단은 필수입니다.</strong></p>
+                <p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 배선 결함은 기기 오작동과 화재의 직접 원인입니다. 지능형홈 기기 설치 전 분전반 전압 진단은 필수입니다.</strong></p>
                 <p>멀티미터로 분전반 터미널 L(활선)·N(중성선)·E(접지) 간 전압을 측정하고, 배선의 이상 여부를 진단하시오. 측정 전, 아래 <b style="color:#b45309;">[🔧 지능형홈 멀티미터 사용법]</b>을 펼쳐 프로브 접촉 위치를 확인하십시오.</p>
                 <details style="margin:.8rem 0;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;overflow:hidden;"><summary style="cursor:pointer;padding:.7rem .9rem;font-size:13.5px;font-weight:800;color:#334155;display:flex;align-items:center;gap:.4rem;user-select:none;">🔧 지능형홈 멀티미터 사용법 <span style="font-size:11px;color:#94a3b8;font-weight:600;">— 측정 전 펼쳐서 프로브 접촉 위치 확인</span></summary><div style="padding:.2rem .85rem .9rem;"><div style="font-size:12.5px;font-weight:800;color:#475569;margin-bottom:.55rem;">🔌 프로브를 어느 단자에 대는가 — 측정별 접촉 위치</div><div style="display:flex;gap:.6rem;flex-wrap:wrap;"><div style="flex:1;min-width:150px;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:.7rem .5rem;text-align:center;"><div style="font-size:12px;font-weight:800;color:#334155;margin-bottom:.35rem;">측정 1 · L ↔ N</div><svg viewBox="0 0 200 156" style="width:100%;height:auto;max-width:190px;"><rect x="14" y="20" width="40" height="120" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/><circle cx="34" cy="40" r="11" fill="#a16207"/><text x="34" y="44" text-anchor="middle" fill="#fff" font-size="12" font-weight="800">L</text><circle cx="34" cy="80" r="11" fill="#2563eb"/><text x="34" y="84" text-anchor="middle" fill="#fff" font-size="12" font-weight="800">N</text><circle cx="34" cy="120" r="11" fill="#16a34a" stroke="#facc15" stroke-width="3"/><text x="34" y="124" text-anchor="middle" fill="#fff" font-size="11" font-weight="800">E</text><line x1="45" y1="40" x2="150" y2="30" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round"/><circle cx="45" cy="40" r="4.5" fill="#dc2626"/><rect x="150" y="22" width="36" height="16" rx="4" fill="#dc2626"/><text x="168" y="34" text-anchor="middle" fill="#fff" font-size="10" font-weight="800">+</text><line x1="45" y1="80" x2="150" y2="80" stroke="#1f2937" stroke-width="3.5" stroke-linecap="round"/><circle cx="45" cy="80" r="4.5" fill="#1f2937"/><rect x="150" y="72" width="36" height="16" rx="4" fill="#1f2937"/><text x="168" y="84" text-anchor="middle" fill="#fff" font-size="10" font-weight="800">−</text></svg><div style="font-size:12px;font-weight:700;color:#0f172a;margin-top:.35rem;">≈ 220V <span style="color:#16a34a">정상</span></div></div><div style="flex:1;min-width:150px;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:.7rem .5rem;text-align:center;"><div style="font-size:12px;font-weight:800;color:#334155;margin-bottom:.35rem;">측정 2 · N ↔ E</div><svg viewBox="0 0 200 156" style="width:100%;height:auto;max-width:190px;"><rect x="14" y="20" width="40" height="120" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/><circle cx="34" cy="40" r="11" fill="#a16207"/><text x="34" y="44" text-anchor="middle" fill="#fff" font-size="12" font-weight="800">L</text><circle cx="34" cy="80" r="11" fill="#2563eb"/><text x="34" y="84" text-anchor="middle" fill="#fff" font-size="12" font-weight="800">N</text><circle cx="34" cy="120" r="11" fill="#16a34a" stroke="#facc15" stroke-width="3"/><text x="34" y="124" text-anchor="middle" fill="#fff" font-size="11" font-weight="800">E</text><line x1="45" y1="80" x2="150" y2="70" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round"/><circle cx="45" cy="80" r="4.5" fill="#dc2626"/><rect x="150" y="62" width="36" height="16" rx="4" fill="#dc2626"/><text x="168" y="74" text-anchor="middle" fill="#fff" font-size="10" font-weight="800">+</text><line x1="45" y1="120" x2="150" y2="120" stroke="#1f2937" stroke-width="3.5" stroke-linecap="round"/><circle cx="45" cy="120" r="4.5" fill="#1f2937"/><rect x="150" y="112" width="36" height="16" rx="4" fill="#1f2937"/><text x="168" y="124" text-anchor="middle" fill="#fff" font-size="10" font-weight="800">−</text></svg><div style="font-size:12px;font-weight:700;color:#0f172a;margin-top:.35rem;">≈ 0V <span style="color:#16a34a">정상</span></div></div><div style="flex:1;min-width:150px;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:.7rem .5rem;text-align:center;"><div style="font-size:12px;font-weight:800;color:#334155;margin-bottom:.35rem;">측정 3 · L ↔ E</div><svg viewBox="0 0 200 156" style="width:100%;height:auto;max-width:190px;"><rect x="14" y="20" width="40" height="120" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/><circle cx="34" cy="40" r="11" fill="#a16207"/><text x="34" y="44" text-anchor="middle" fill="#fff" font-size="12" font-weight="800">L</text><circle cx="34" cy="80" r="11" fill="#2563eb"/><text x="34" y="84" text-anchor="middle" fill="#fff" font-size="12" font-weight="800">N</text><circle cx="34" cy="120" r="11" fill="#16a34a" stroke="#facc15" stroke-width="3"/><text x="34" y="124" text-anchor="middle" fill="#fff" font-size="11" font-weight="800">E</text><line x1="45" y1="40" x2="150" y2="30" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round"/><circle cx="45" cy="40" r="4.5" fill="#dc2626"/><rect x="150" y="22" width="36" height="16" rx="4" fill="#dc2626"/><text x="168" y="34" text-anchor="middle" fill="#fff" font-size="10" font-weight="800">+</text><line x1="45" y1="120" x2="150" y2="120" stroke="#1f2937" stroke-width="3.5" stroke-linecap="round"/><circle cx="45" cy="120" r="4.5" fill="#1f2937"/><rect x="150" y="112" width="36" height="16" rx="4" fill="#1f2937"/><text x="168" y="124" text-anchor="middle" fill="#fff" font-size="10" font-weight="800">−</text></svg><div style="font-size:12px;font-weight:700;color:#0f172a;margin-top:.35rem;">≈ 220V <span style="color:#16a34a">정상</span></div></div></div><div style="font-size:11px;color:#94a3b8;margin-top:.6rem;line-height:1.5;">※ <b style="color:#dc2626;">빨강(+)</b>=측정 단자, <b style="color:#1f2937;">검정(−)</b>=기준 단자에 접촉. 교류(AC)라 극성은 무관하나, 접지(E)·중성선(N)을 기준으로 통일해 표시했습니다.</div></div></details>
                 <ul class="mt-1.5 space-y-1 text-[13px] pl-1">
-                  <li class="flex gap-2"><span class="text-slate-600 font-bold shrink-0">측정 1.</span>L과 N 간 상전압을 측정하시오. (정상 범위: 220V ±10%, 198V ~ 242V)</li>
+                  <li class="flex gap-2"><span class="text-slate-600 font-bold shrink-0">측정 1.</span>L과 N 간 상전압을 측정하시오. (정상 범위: 220V ±10%, 198V ~ 242V — 「전기사업법 시행규칙」 [별표3] 표준전압 허용오차, 2025.6.13 개정)</li>
                   <li class="flex gap-2"><span class="text-slate-600 font-bold shrink-0">측정 2.</span>N과 E 간 접지전위를 측정하시오. (기준: 2.0V 이하)</li>
                   <li class="flex gap-2"><span class="text-slate-600 font-bold shrink-0">측정 3.</span>L과 E 간 전위차를 측정하시오. (220V 내외, 측정 1 값과 유사)</li>
                 </ul>
@@ -1386,9 +1395,9 @@ input[type="range"]{accent-color:#2563eb;}
           <div id="screen-t02" class="hidden-task space-y-4">
             <div class="task-banner border-slate-300 bg-slate-50">
               <div class="text-[13px] font-normal text-slate-700 space-y-1">
-                <p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 지능형홈 조명 전원 설계 — 정전류(CC) vs 정전압(CV)</strong></p>
+                <p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 지능형홈 조명 전원 설계 — 정전류(CC) vs 정전압(CV)</strong></p>
                 <p>개념을 이해한 뒤, 배선도의 빈 자리에 알맞은 기기를 드래그하여 3선식 표준 배선을 완성하시오.</p>
-                <p class="text-[12px] text-slate-600 font-normal mt-1.5 pulse-soft">※ 기기 4개(IoT 스위치·SMPS·드라이버 A·B)를 모두 배치한 후 [진단 실행]을 클릭하십시오.</p>
+                <p class="text-xs text-slate-600 font-normal mt-1.5 pulse-soft">※ 기기 4개(IoT 스위치·SMPS·드라이버 A·B)를 모두 배치한 후 [진단 실행]을 클릭하십시오.</p>
               </div>
             </div>
             <div class="flex gap-2 mb-3">
@@ -1403,12 +1412,12 @@ input[type="range"]{accent-color:#2563eb;}
 <div class="border-2 border-red-200 rounded-xl p-3 bg-red-50">
 <div class="font-black text-red-700 mb-1">정전류 · CC <span class="text-[11px] font-normal">(Constant Current)</span></div>
 <div class="text-[12.5px] leading-relaxed">전류를 항상 일정하게. 비유: <b>속도가 일정한 컨베이어 벨트</b>. LED에 똑같은 양의 전류를 밀어 넣어 밝기를 안정적으로 유지합니다.</div>
-<div class="mt-2 text-[12px] text-red-800 font-bold">→ 다운라이트 (개별 등기구)</div></div>
+<div class="mt-2 text-xs text-red-800 font-bold">→ 다운라이트 (개별 등기구)</div></div>
 <div class="border-2 border-blue-200 rounded-xl p-3 bg-blue-50">
 <div class="font-black text-blue-700 mb-1">정전압 · CV <span class="text-[11px] font-normal">(Constant Voltage)</span></div>
 <div class="text-[12.5px] leading-relaxed">전압을 항상 일정하게. 비유: <b>수압이 일정한 수도꼭지</b>. 24V를 균일하게 걸어, 길게 잇거나 잘라 써도 일정한 밝기를 유지합니다.</div>
-<div class="mt-2 text-[12px] text-blue-800 font-bold">→ LED 스트립 (라인 조명)</div></div></div>
-<details class="mt-1"><summary class="text-[12px] font-bold text-blue-600 cursor-pointer">▸ 더 알아보기 (바꿔 쓰면? · SMPS는 왜 1개?)</summary><div class="mt-2 space-y-3"><div class="bg-slate-50 rounded-xl p-3 border border-slate-200">
+<div class="mt-2 text-xs text-blue-800 font-bold">→ LED 스트립 (라인 조명)</div></div></div>
+<details class="mt-1"><summary class="text-xs font-bold text-blue-600 cursor-pointer">▸ 더 알아보기 (바꿔 쓰면? · SMPS는 왜 1개?)</summary><div class="mt-2 space-y-3"><div class="bg-slate-50 rounded-xl p-3 border border-slate-200">
 <div class="font-bold text-slate-700 mb-1.5">⚠️ 바꿔 쓰면?</div>
 <ul class="space-y-1 text-[12.5px]">
 <li>· 스트립에 <b class="text-red-700">정전류(CC)</b> → 자르는 순간 과전류가 몰려 <b>타버림</b></li>
@@ -1554,7 +1563,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
             <div class="task-banner border-slate-300 bg-slate-50">
               
               <div class="text-[13px] font-normal text-slate-700 space-y-1">
-                <p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 각 공간의 조명 설치 규모를 입력하고, 타입을 선정하여 LED 전원장치 용량의 적정성을 확인하시오.</strong></p>
+                <p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 각 공간의 조명 설치 규모를 입력하고, 타입을 선정하여 LED 전원장치 용량의 적정성을 확인하시오.</strong></p>
                 <ul class="mt-1.5 space-y-1 text-[13px] pl-1">
                   <li class="flex gap-2"><span class="text-slate-600 font-bold shrink-0">조건 1.</span>각 공간의 설치 규모(m 또는 set)를 입력하여 총 조명 부하(W)를 산출하시오.</li>
                   <li class="flex gap-2"><span class="text-slate-600 font-bold shrink-0">조건 2.</span>고객 요구에 따라 조명 타입(CCT / RGB)을 선택하여 전원장치 구성 방식을 결정하시오.</li>
@@ -1644,7 +1653,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
             <div class="task-banner border-slate-300 bg-slate-50">
               
               <div class="text-[13px] font-normal text-slate-700 space-y-1.5">
-                <p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 아래 평면도에서 4가지 센서를 최적 위치에 배치하십시오.</strong></p>
+                <p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 아래 평면도에서 4가지 센서를 최적 위치에 배치하십시오.</strong></p>
                 <ul class="space-y-1.5 text-[13px] pl-1">
                   <li class="flex gap-2"><span class="text-slate-600 font-bold shrink-0">1.</span><span><span class="inline-block w-2.5 h-2.5 rounded-full bg-rose-500 mr-1 align-middle"></span><strong class="text-rose-600">안방 mmWave 센서</strong> (재실·낙상감지) — 안방 전체를 사각지대 없이 커버할 수 있는 최적의 위치에 배치하시오. <em class="text-slate-400 not-italic">※ 천장 중앙 설치 시 360° 감지</em></span></li>
                   <li class="flex gap-2"><span class="text-slate-600 font-bold shrink-0">2.</span><span><span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 mr-1 align-middle"></span><strong class="text-amber-600">거실 PIR 센서</strong> (모션감지) — 거실 전체를 사각지대 없이 감지할 수 있도록 코너 위치에 배치하시오. <em class="text-slate-400 not-italic">※ 코너 설치 시 최대 커버리지</em></span></li>
@@ -1770,10 +1779,10 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
             <div class="task-banner border-slate-300 bg-slate-50">
               
               <div class="text-[13px] font-normal text-slate-700 space-y-1">
-                <p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] Wi-Fi와 Zigbee는 같은 2.4GHz 대역을 공유하므로, 채널 중첩 시 응답 지연·연결 불안정이 발생합니다.</strong></p>
+                <p><strong class="font-bold text-slate-800 text-sm">[실습 과제] Wi-Fi와 Zigbee는 같은 2.4GHz 대역을 공유하므로, 채널 중첩 시 응답 지연·연결 불안정이 발생합니다.</strong></p>
                 <p>국내 공동주택 환경의 2.4GHz 주파수 스펙트럼을 분석하고, Zigbee 기기에 적합한 채널을 선정하시오.</p>
                 <ul class="mt-1.5 space-y-1 text-[13px] pl-1">
-                  <li class="flex gap-2"><span class="text-slate-600 font-bold shrink-0">조건 1.</span>Wi-Fi 1·6·11번 채널의 점유 대역이 Zigbee 채널과 중첩되지 않는 채널을 선정하시오.</li>
+                  <li class="flex gap-2"><span class="text-slate-600 font-bold shrink-0">조건 1.</span>Wi-Fi 1·6·11번 채널의 점유 대역이 Zigbee 채널과 중첩되지 않는 채널을 선정하시오. (IEEE 802.11 / IEEE 802.15.4 채널 배치 기준)</li>
                   <li class="flex gap-2"><span class="text-slate-600 font-bold shrink-0">조건 2.</span>선정된 채널의 <strong class="text-slate-800">RSSI ≥ −70 dBm</strong>, <strong class="text-slate-800">LQI ≥ 200</strong> 이어야 합격이다.</li>
                 </ul>
                 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 스펙트럼 분석 후 적합한 Zigbee 채널을 선택한 후 [진단 실행]을 클릭하십시오.</p>
@@ -1813,7 +1822,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
             <div class="task-banner border-slate-300 bg-slate-50">
               
               <div class="text-[13px] font-normal text-slate-700 space-y-1">
-                <p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 무선 음영 구역이 있으면 지능형홈 기기가 명령을 받지 못해 자동화가 동작하지 않습니다. 전 구역 안정적인 커버리지 확보가 필수입니다.</strong></p>
+                <p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 무선 음영 구역이 있으면 지능형홈 기기가 명령을 받지 못해 자동화가 동작하지 않습니다. 전 구역 안정적인 커버리지 확보가 필수입니다.</strong></p>
                 <p>아래 평면도에 Main AP와 Mesh Node를 배치하여 전 구역 무선 커버리지를 확보하시오.</p>
                 <ul class="mt-1.5 space-y-1 text-[13px] pl-1">
                   <li class="flex gap-2"><span class="text-slate-600 font-bold shrink-0">조건 1.</span>모든 공간의 <strong class="text-slate-800">RSSI ≥ −65 dBm</strong>이어야 합격이다.</li>
@@ -1841,7 +1850,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
             <div class="task-banner border-slate-300 bg-slate-50">
               
               <div class="text-[13px] font-normal text-slate-700 space-y-1.5">
-                <p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 아래 시나리오의 자동화 로직의 각 항목을 올바르게 선택하시오.</strong></p>
+                <p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 아래 시나리오의 자동화 로직의 각 항목을 올바르게 선택하시오.</strong></p>
                 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ IF/THEN/ELSE 모든 조건 설정 후 [진단 실행]을 클릭하십시오.</p>
                 <div class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-[13px] text-slate-700 font-normal leading-relaxed space-y-1.5 mt-2">
                   <p><span class="font-bold text-slate-800">시나리오</span> — 맞벌이 부부 세대. 평일 낮 시간대(14:00~17:00) 어린 자녀가 혼자 있는 시간, 안방 mmWave 센서가 낙상 이벤트를 감지하면 보호자 앱 긴급 알림(1차)과 자동 전화 발신(2차)이 순차 연동되어야 합니다.</p>
@@ -1857,7 +1866,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="space-y-2">
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">시간 조건</label>
-                    <select id="t07-if0" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-purple-400 focus:outline-none">
+                    <select id="t07-if0" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-purple-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="time_1417">평일 14:00~17:00</option>
                       <option value="time_0008">평일 00:00~08:00</option>
@@ -1872,7 +1881,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                   </div>
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">감지 센서</label>
-                    <select id="t07-if1" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-purple-400 focus:outline-none">
+                    <select id="t07-if1" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-purple-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="mmwave">안방 mmWave 센서</option>
                       <option value="pir">거실 PIR 센서</option>
@@ -1887,7 +1896,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                   </div>
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">감지 조건</label>
-                    <select id="t07-if2" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-purple-400 focus:outline-none">
+                    <select id="t07-if2" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-purple-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="fall">낙상 이벤트 감지 시</option>
                       <option value="motion">움직임 감지 시</option>
@@ -1903,7 +1912,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="space-y-2">
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">1차 동작</label>
-                    <select id="t07-then1" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-blue-400 focus:outline-none">
+                    <select id="t07-then1" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-blue-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="notify">보호자 앱 긴급 알림</option>
                       <option value="light">조명 자동 켜기</option>
@@ -1913,7 +1922,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                   </div>
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">2차 동작</label>
-                    <select id="t07-then2" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-blue-400 focus:outline-none">
+                    <select id="t07-then2" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-blue-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="call">보호자 자동 전화 발신</option>
                       <option value="camera">카메라 녹화 시작</option>
@@ -1929,7 +1938,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="space-y-2">
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">낙상 미감지 시 (정상 재실)</label>
-                    <select id="t07-else1" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-slate-400 focus:outline-none">
+                    <select id="t07-else1" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-slate-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="standby">정상 재실 모니터링 유지</option>
                       <option value="off">센서 비활성화</option>
@@ -1952,7 +1961,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
             <div class="task-banner border-slate-300 bg-slate-50">
               
               <div class="text-[13px] font-normal text-slate-700 space-y-1.5">
-                <p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 아래 시나리오의 자동화 로직의 각 항목을 올바르게 선택하시오.</strong></p>
+                <p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 아래 시나리오의 자동화 로직의 각 항목을 올바르게 선택하시오.</strong></p>
                 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ IF/THEN/ELSE 모든 조건 설정 후 [진단 실행]을 클릭하십시오.</p>
                 <div class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-[13px] text-slate-700 font-normal leading-relaxed space-y-1.5 mt-2">
                   <p><span class="font-bold text-slate-800">시나리오</span> — 맞벌이 부부와 어린 자녀 3인 가족 세대. 평일 07:30~08:30 출근·등교 시간대, 현관 중문이 개방되면 엘리베이터가 즉시 자동 호출(1차)되고, 이후 거실 PIR이 20분간 재실을 감지하지 않으면 전체 기기가 자동 절전모드(2차)로 전환됩니다.</p>
@@ -1967,7 +1976,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="space-y-2">
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">시간 조건</label>
-                    <select id="t08-if0" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-purple-400 focus:outline-none">
+                    <select id="t08-if0" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-purple-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="time_0708">평일 07:30~08:30</option>
                       <option value="time_1417">평일 14:00~17:00</option>
@@ -1982,7 +1991,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                   </div>
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">감지 센서</label>
-                    <select id="t08-if1" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-purple-400 focus:outline-none">
+                    <select id="t08-if1" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-purple-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="door">중문 도어센서</option>
                       <option value="mmwave">안방 mmWave 센서</option>
@@ -1997,7 +2006,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                   </div>
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">감지 조건</label>
-                    <select id="t08-if2" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-purple-400 focus:outline-none">
+                    <select id="t08-if2" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-purple-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="open">중문 개방 감지 시</option>
                       <option value="close">중문 닫힘 감지 시</option>
@@ -2013,7 +2022,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="space-y-2">
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">1차 동작</label>
-                    <select id="t08-then1" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-blue-400 focus:outline-none">
+                    <select id="t08-then1" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-blue-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="elev">엘리베이터 자동 호출</option>
                       <option value="light">조명 자동 켜기</option>
@@ -2023,7 +2032,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                   </div>
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">2차 동작</label>
-                    <select id="t08-then2" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-blue-400 focus:outline-none">
+                    <select id="t08-then2" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-blue-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="alloff">20분간 PIR 무감지 시 전체 절전모드</option>
                       <option value="camera">카메라 녹화 시작</option>
@@ -2039,7 +2048,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="space-y-2">
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">시간대 외 개방 시</label>
-                    <select id="t08-else1" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-slate-400 focus:outline-none">
+                    <select id="t08-else1" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-slate-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="standby">자동화 미작동 — 대기 유지</option>
                       <option value="off">자동화 비활성화</option>
@@ -2061,7 +2070,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
             <div class="task-banner border-slate-300 bg-slate-50">
               
               <div class="text-[13px] font-normal text-slate-700 space-y-1.5">
-                <p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 아래 시나리오의 자동화 로직의 각 항목을 올바르게 선택하시오.</strong></p>
+                <p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 아래 시나리오의 자동화 로직의 각 항목을 올바르게 선택하시오.</strong></p>
                 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ IF/THEN/ELSE 모든 조건 설정 후 [진단 실행]을 클릭하십시오.</p>
                 <div class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-[13px] text-slate-700 font-normal leading-relaxed space-y-1.5 mt-2">
                   <p><span class="font-bold text-slate-800">시나리오</span> — 주방 조리 중 가스레인지 사용으로 CO₂ 및 연소가스 농도가 상승합니다. CO₂ 센서가 1,000 ppm을 초과하면 환기팬이 강풍으로 자동 작동(1차)하고 거주자에게 앱 알림(2차)이 전송됩니다.</p>
@@ -2077,7 +2086,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="space-y-2">
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">감지 센서</label>
-                    <select id="t09-if1" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-purple-400 focus:outline-none">
+                    <select id="t09-if1" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-purple-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="co2">주방 CO₂ 센서</option>
                       <option value="mmwave">안방 mmWave 센서</option>
@@ -2092,7 +2101,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                   </div>
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">임계값 조건</label>
-                    <select id="t09-if2" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-purple-400 focus:outline-none">
+                    <select id="t09-if2" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-purple-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="1,000 ppm">1,000 ppm 초과 감지 시</option>
                       <option value="500 ppm">500 ppm 초과 감지 시</option>
@@ -2108,7 +2117,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="space-y-2">
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">1차 동작</label>
-                    <select id="t09-then1" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-blue-400 focus:outline-none">
+                    <select id="t09-then1" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-blue-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="vent_high">환기팬 강풍 ON</option>
                       <option value="vent_low">환기팬 약풍 ON</option>
@@ -2118,7 +2127,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                   </div>
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">2차 동작</label>
-                    <select id="t09-then2" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-blue-400 focus:outline-none">
+                    <select id="t09-then2" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-blue-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="push">거주자 앱 푸시 알림</option>
                       <option value="call">자동 전화 발신</option>
@@ -2134,7 +2143,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="space-y-2">
                   <div>
                     <label class="text-xs font-normal text-slate-500 uppercase tracking-wide">CO₂ 750 ppm 이하 정상 복귀 시</label>
-                    <select id="t09-else1" class="mt-1 w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-slate-400 focus:outline-none">
+                    <select id="t09-else1" class="mt-1 w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:border-slate-400 focus:outline-none">
                       <option value="">-- 선택 --</option>
                       <option value="vent_low">환기팬 약풍으로 전환 (잔류가스 배출 유지)</option>
                       <option value="vent_off">환기팬 완전 OFF</option>
@@ -2215,7 +2224,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
 <!-- 확장 프로토콜 -->
                 <div class="bg-white border-2 border-slate-200 rounded-2xl px-4 py-3">
                   <p class="text-xs font-black text-slate-600 uppercase tracking-widest mb-0.5">🏢 산업·공공용 확장 프로토콜 (LPWAN 등)</p>
-                  <p class="text-[12px] text-slate-500 font-normal mb-3">넓은 지역(수 km)을 저전력으로 연결하는 장거리 통신망으로, 스마트시티·원격검침 등 산업·공공 분야에 주로 활용됩니다.</p>
+                  <p class="text-xs text-slate-500 font-normal mb-3">넓은 지역(수 km)을 저전력으로 연결하는 장거리 통신망으로, 스마트시티·원격검침 등 산업·공공 분야에 주로 활용됩니다.</p>
                   <div class="grid grid-cols-3 gap-3">
                     <div class="bg-white rounded-xl border-2 border-slate-200 shadow-sm">
                       <div class="px-3 py-2 border-b border-slate-100 flex justify-end"><span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-black">확장·장거리</span></div>
@@ -2308,7 +2317,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
               <div id="t17-step1" class="space-y-8">
                 <!-- 전기 흐름 다이어그램 (분전반 → 차단기 → SMPS → 릴레이 → 접지) -->
                 <div class="rounded-2xl border-2 border-slate-200 bg-white p-4">
-                  <p class="text-[14px] font-bold text-slate-500 uppercase tracking-widest mb-3"><i class="fas fa-route mr-1 text-blue-500"></i>전기 흐름 개념도</p>
+                  <p class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-3"><i class="fas fa-route mr-1 text-blue-500"></i>전기 흐름 개념도</p>
                   <svg viewBox="0 0 860 140" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto" style="max-height:160px;">
                     <defs>
                       <marker id="arrFlow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
@@ -2394,7 +2403,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
               <div id="t17-step2" class="space-y-4" style="display:none">
                 <div class="bg-blue-50 border-l-4 border-blue-400 rounded-r-xl px-4 py-3">
                   <p class="text-xs font-black text-blue-700 uppercase tracking-widest mb-1">역할 매칭 퀴즈</p>
-                  <p class="text-[12px] text-slate-700 font-normal leading-snug">좌측의 부품 카드를 우측의 *해당 역할*에 드래그하여 매칭하시오. 각 부품은 정확히 하나의 역할에 대응됩니다.</p>
+                  <p class="text-xs text-slate-700 font-normal leading-snug">좌측의 부품 카드를 우측의 *해당 역할*에 드래그하여 매칭하시오. 각 부품은 정확히 하나의 역할에 대응됩니다.</p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
@@ -2577,7 +2586,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="space-y-5">
                   <!-- 서비스 소개 배너 -->
                   <div class="card p-4" style="background:linear-gradient(135deg,#f8fafc,#eff6ff)">
-                    <p class="text-[14px] font-black text-slate-800 mb-1">🏠 독거노인·장애인 응급안전안심서비스란?</p>
+                    <p class="text-sm font-black text-slate-800 mb-1">🏠 독거노인·장애인 응급안전안심서비스란?</p>
                     <p class="text-[13px] text-slate-600 font-normal leading-relaxed">댁내에 <strong class="font-bold text-slate-700">게이트웨이·4종 센서(화재·활동량·응급호출·출입)·웨어러블</strong>을 설치해 어르신의 안전을 24시간 살피고, 위급 시 <strong class="font-bold text-slate-700">119·지역센터·보호자</strong>로 연계하는 국가 돌봄 서비스입니다. 여기에 AI를 더하면 어떻게 더 똑똑해질까요?</p>
                   </div>
                   <!-- 4단계 흐름도 -->
@@ -2605,7 +2614,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
             <div class="task-banner border-slate-300 bg-slate-50">
               
               <div class="text-[13px] font-normal text-slate-700 space-y-1.5">
-                <p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 4-4에서 학습한 AI 기술 체계를 바탕으로, 아래 3가지 분야의 시나리오를 분석하고 AI 기술 스택을 5단계로 설계하시오.</strong></p>
+                <p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 4-4에서 학습한 AI 기술 체계를 바탕으로, 아래 3가지 분야의 시나리오를 분석하고 AI 기술 스택을 5단계로 설계하시오.</strong></p>
                 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ A·B·C 시나리오 5단계를 모두 완료한 후 [진단 실행]을 클릭하십시오.</p>
               </div>
             </div>
@@ -2645,7 +2654,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <!-- 1단계 -->
                 <div class="bg-white border-2 border-purple-200 rounded-2xl p-4">
                   <p class="text-xs font-black text-purple-600 uppercase tracking-widest mb-1"><i class="fas fa-database mr-1"></i>1단계 — 수집 데이터 유형</p><p class="text-[13px] text-slate-500 font-normal mb-3">※ AI가 학습할 재료를 파악합니다. 어떤 데이터인지에 따라 이후 모든 선택이 결정됩니다.</p>
-                  <select id="t13-step1" class="w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-purple-400 focus:outline-none">
+                  <select id="t13-step1" class="w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-purple-400 focus:outline-none">
                     <option value="">-- 선택 --</option>
                     <option value="ts_single">연속 수치형 시계열 (시간마다 숫자가 계속 나오는 데이터 — 온도·전력·심박)</option>
                     <option value="ts_multi_num">복합 시계열 · 연속 수치형 (여러 센서에서 수치가 동시에 계속 수집되는 구조)</option>
@@ -2659,7 +2668,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="bg-white border-2 border-blue-200 rounded-2xl p-4">
                   <p class="text-xs font-black text-blue-600 uppercase tracking-widest mb-3"><i class="fas fa-graduation-cap mr-1"></i>2단계 — AI 학습 방식</p>
                   <p class="text-[13px] text-slate-500 font-normal mb-3">※ 1단계에서 파악한 데이터 유형을 바탕으로, AI가 어떻게 배울지 결정합니다. 수집 데이터에 정답(레이블)이 있는지 없는지가 핵심 판단 기준입니다.</p>
-                  <select id="t13-step2" class="w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-blue-400 focus:outline-none">
+                  <select id="t13-step2" class="w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-blue-400 focus:outline-none">
                     <option value="">-- 선택 --</option>
                     <option value="sup">지도학습 (정답이 있는 데이터로 분류·예측을 훈련)</option>
                     <option value="unsup">비지도학습 (사전에 정해진 정답 없이 데이터 스스로 패턴을 찾는 학습)</option>
@@ -2671,7 +2680,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <!-- 3단계 -->
                 <div class="bg-white border-2 border-teal-200 rounded-2xl p-4">
                   <p class="text-xs font-black text-teal-600 uppercase tracking-widest mb-1"><i class="fas fa-brain mr-1"></i>3단계 — AI 분석 모델</p><p class="text-[13px] text-slate-500 font-normal mb-3">※ 데이터를 실제로 분석할 구조를 선택합니다. 과거 데이터의 흐름을 기억해야 현재를 판단할 수 있다면 RNN/LSTM, 이미지·공간 분석이라면 CNN, 자연어·음성이라면 Transformer를 선택합니다.</p>
-                  <select id="t13-step3" class="w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-teal-400 focus:outline-none">
+                  <select id="t13-step3" class="w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-teal-400 focus:outline-none">
                     <option value="">-- 선택 --</option>
                     <option value="cnn">CNN (영상·이미지에서 공간 특징을 추출하는 딥러닝 모델)</option>
                     <option value="rnn">RNN/LSTM (시계열·순차 데이터 분석 — 이상 감지부터 장기 예측까지)</option>
@@ -2684,7 +2693,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <!-- 4단계 -->
                 <div class="bg-white border-2 border-amber-200 rounded-2xl p-4">
                   <p class="text-xs font-black text-amber-600 uppercase tracking-widest mb-1"><i class="fas fa-microchip mr-1"></i>4단계 — AI 처리 위치</p><p class="text-[13px] text-slate-500 font-normal mb-3">※ AI 추론을 어디서 실행할지 결정합니다. 속도·보안·비용이 위치 선택의 기준입니다.</p>
-                  <select id="t13-step4" class="w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-amber-400 focus:outline-none">
+                  <select id="t13-step4" class="w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-amber-400 focus:outline-none">
                     <option value="">-- 선택 --</option>
                     <option value="edge">Edge AI — 허브 로컬 추론 (현장 게이트웨이에서 즉시 판단 — 빠름·외부 전송 없음)</option>
                     <option value="cloud">Cloud AI 단독 (서버에서 대규모 분석 — 느림·확장성 높음)</option>
@@ -2696,7 +2705,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <!-- 5단계 -->
                 <div class="bg-white border-2 border-rose-200 rounded-2xl p-4">
                   <p class="text-xs font-black text-rose-600 uppercase tracking-widest mb-1"><i class="fas fa-shield-alt mr-1"></i>5단계 — 결과 전달 및 보안</p><p class="text-[13px] text-slate-500 font-normal mb-3">※ AI 판단을 누구에게 어떻게 전달할지 결정합니다. 서비스 목적과 보안 방식을 함께 설계합니다.</p>
-                  <select id="t13-step5" class="w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-rose-400 focus:outline-none">
+                  <select id="t13-step5" class="w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-rose-400 focus:outline-none">
                     <option value="">-- 선택 --</option>
                     <option value="guardian_119">보호자 확인 → 119 연계 + 민감 데이터 암호화 전송</option>
                     <option value="auto_control">냉난방·조명 자동 제어 + 생체 데이터 기기 내 보호</option>
@@ -2726,7 +2735,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
             <div class="task-banner border-slate-300 bg-slate-50">
               
               <div class="text-[13px] font-normal text-slate-700 space-y-1.5">
-                <p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 4-5에서 학습한 AI 기술 스택 설계를 공공·의료·교육 공간에 적용하시오.</strong></p>
+                <p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 4-5에서 학습한 AI 기술 스택 설계를 공공·의료·교육 공간에 적용하시오.</strong></p>
                 <p class="text-[13px] text-slate-600 font-normal mt-1">※ 확장 공간에서는 여러 공간의 데이터를 공유하지 않고 학습하는 구조가 핵심입니다.</p>
                 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ A·B·C 시나리오 5단계를 모두 완료한 후 [진단 실행]을 클릭하십시오.</p>
               </div>
@@ -2754,7 +2763,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="bg-white border-2 border-purple-200 rounded-2xl p-4">
                   <p class="text-xs font-black text-purple-600 uppercase tracking-widest mb-1"><i class="fas fa-database mr-1"></i>1단계 — 수집 데이터 유형</p>
                   <p class="text-[13px] text-slate-500 font-normal mb-3">※ AI가 학습할 재료를 파악합니다. 어떤 데이터인지에 따라 이후 모든 선택이 결정됩니다.</p>
-                  <select id="t14-step1" class="w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-purple-400 focus:outline-none">
+                  <select id="t14-step1" class="w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-purple-400 focus:outline-none">
                     <option value="">-- 선택 --</option>
                     <option value="ts_single">연속 수치형 시계열 (시간마다 숫자가 계속 나오는 데이터 — 온도·전력·심박)</option>
                     <option value="ts_multi_num">복합 시계열 · 연속 수치형 (여러 센서에서 수치가 동시에 계속 수집되는 구조)</option>
@@ -2766,7 +2775,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="bg-white border-2 border-blue-200 rounded-2xl p-4">
                   <p class="text-xs font-black text-blue-600 uppercase tracking-widest mb-1"><i class="fas fa-graduation-cap mr-1"></i>2단계 — AI 학습 방식</p>
                   <p class="text-[13px] text-slate-500 font-normal mb-3">※ 1단계에서 파악한 데이터 유형을 바탕으로, AI가 어떻게 배울지 결정합니다. 수집 데이터에 정답(레이블)이 있는지 없는지가 핵심 판단 기준입니다.</p>
-                  <select id="t14-step2" class="w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-blue-400 focus:outline-none">
+                  <select id="t14-step2" class="w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-blue-400 focus:outline-none">
                     <option value="">-- 선택 --</option>
                     <option value="sup">지도학습 (정답이 있는 데이터로 분류·예측을 훈련)</option>
                     <option value="unsup">비지도학습 (사전에 정해진 정답 없이 데이터 스스로 패턴을 찾는 학습)</option>
@@ -2777,7 +2786,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="bg-white border-2 border-teal-200 rounded-2xl p-4">
                   <p class="text-xs font-black text-teal-600 uppercase tracking-widest mb-1"><i class="fas fa-brain mr-1"></i>3단계 — AI 분석 모델</p>
                   <p class="text-[13px] text-slate-500 font-normal mb-3">※ 데이터를 실제로 분석할 구조를 선택합니다. 과거 데이터의 흐름을 기억해야 현재를 판단할 수 있다면 RNN/LSTM, 이미지·공간 분석이라면 CNN을 선택합니다.</p>
-                  <select id="t14-step3" class="w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-teal-400 focus:outline-none">
+                  <select id="t14-step3" class="w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-teal-400 focus:outline-none">
                     <option value="">-- 선택 --</option>
                     <option value="cnn">CNN (영상·이미지에서 공간 특징을 추출하는 딥러닝 모델)</option>
                     <option value="rnn">RNN/LSTM (시계열·순차 데이터 분석 — 이상 감지부터 장기 예측까지)</option>
@@ -2789,7 +2798,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="bg-white border-2 border-amber-200 rounded-2xl p-4">
                   <p class="text-xs font-black text-amber-600 uppercase tracking-widest mb-1"><i class="fas fa-microchip mr-1"></i>4단계 — AI 처리 위치</p>
                   <p class="text-[13px] text-slate-500 font-normal mb-3">※ AI 추론을 어디서 실행할지 결정합니다. 여러 공간의 데이터를 공유하지 않고 학습해야 한다면 Federated Learning을 선택합니다.</p>
-                  <select id="t14-step4" class="w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-amber-400 focus:outline-none">
+                  <select id="t14-step4" class="w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-amber-400 focus:outline-none">
                     <option value="">-- 선택 --</option>
                     <option value="edge">Edge AI — 허브 로컬 추론 (현장 게이트웨이에서 즉시 판단 — 개인정보 외부 전송 없음)</option>
                     <option value="cloud">Cloud AI 단독 (서버에서 대규모 분석 — 느림·확장성 높음)</option>
@@ -2801,7 +2810,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="bg-white border-2 border-rose-200 rounded-2xl p-4">
                   <p class="text-xs font-black text-rose-600 uppercase tracking-widest mb-1"><i class="fas fa-shield-alt mr-1"></i>5단계 — 결과 전달 및 보안</p>
                   <p class="text-[13px] text-slate-500 font-normal mb-3">※ AI 판단을 누구에게 어떻게 전달할지 결정합니다. 서비스 목적과 보안 방식을 함께 설계합니다.</p>
-                  <select id="t14-step5" class="w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-rose-400 focus:outline-none">
+                  <select id="t14-step5" class="w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2.5 bg-slate-50 focus:border-rose-400 focus:outline-none">
                     <option value="">-- 선택 --</option>
                     <option value="medical">의료진 자동 알림 + 의료데이터 암호화 저장</option>
                     <option value="guardian_control">보호자+관제 동시 알림 + 영상 암호화 저장</option>
@@ -2875,7 +2884,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="rounded-2xl border-2 border-slate-200 overflow-hidden">
                   <div class="px-4 py-3 bg-slate-50 border-b border-slate-200">
                     <p class="text-xs font-black text-slate-600">🏢 공공·상업 공간 특화 센서</p>
-                    <p class="text-[12px] text-slate-500 font-normal mt-0.5">주거 공간을 넘어 학교·병원·공공건물 등 확장 공간에서 사용되는 고급 센서입니다.</p>
+                    <p class="text-xs text-slate-500 font-normal mt-0.5">주거 공간을 넘어 학교·병원·공공건물 등 확장 공간에서 사용되는 고급 센서입니다.</p>
                   </div>
                   <div class="p-3 grid grid-cols-3 gap-3">
                     <div class="bg-white rounded-xl border-2 border-slate-200 shadow-sm">
@@ -2956,9 +2965,9 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
           <!-- ── L2: Task10 스마트홈 기기 구성 ── -->
           <div id="screen-t10" class="hidden-task space-y-4">
             <div class="flex gap-2">
-              <button onclick="selectT10Scene('bedroom')" id="t10-tab-bedroom" class="flex-1 py-2 text-sm font-black rounded-xl border-2 border-slate-700 bg-slate-700 text-white transition-all">🛏 안방 — 숙면과 편의</button>
-              <button onclick="selectT10Scene('living')"  id="t10-tab-living"  class="flex-1 py-2 text-sm font-black rounded-xl border-2 border-slate-200 bg-white text-slate-500 transition-all">🛋 거실 — 편의와 절약</button>
-              <button onclick="selectT10Scene('kitchen')" id="t10-tab-kitchen" class="flex-1 py-2 text-sm font-black rounded-xl border-2 border-slate-200 bg-white text-slate-500 transition-all">🍳 주방 — 요리와 안심</button>
+              <button onclick="selectT10Scene('bedroom')" id="t10-tab-bedroom" class="flex-1 py-2.5 text-[15px] font-black rounded-xl border-2 border-slate-700 bg-slate-700 text-white transition-all">🛏 안방 — 숙면과 편의</button>
+              <button onclick="selectT10Scene('living')"  id="t10-tab-living"  class="flex-1 py-2.5 text-[15px] font-black rounded-xl border-2 border-slate-200 bg-white text-slate-500 transition-all">🛋 거실 — 편의와 절약</button>
+              <button onclick="selectT10Scene('kitchen')" id="t10-tab-kitchen" class="flex-1 py-2.5 text-[15px] font-black rounded-xl border-2 border-slate-200 bg-white text-slate-500 transition-all">🍳 주방 — 요리와 안심</button>
             </div>
             <div class="task-banner border-slate-300 bg-slate-50">
               
@@ -2981,7 +2990,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
             <div class="task-banner border-slate-300 bg-slate-50">
               
               <div class="text-[13px] font-normal text-slate-700 space-y-1.5">
-                <p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 허브는 모든 지능형홈 기기를 연결하는 핵심 인프라입니다. 설정 순서가 잘못되거나 오류를 방치하면 전체 시스템이 작동하지 않습니다.</strong></p>
+                <p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 허브는 모든 지능형홈 기기를 연결하는 핵심 인프라입니다. 설정 순서가 잘못되거나 오류를 방치하면 전체 시스템이 작동하지 않습니다.</strong></p>
                 <p>허브 초기 설정 순서를 올바르게 배열하고, 발생한 오류 상황의 원인을 진단하시오.</p>
                 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 2단계를 모두 완료한 후 [진단 실행]을 클릭하십시오.</p>
               </div>
@@ -3010,8 +3019,8 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
         <!-- ── 우측 진단 패널 (T01~T17 공용) ── -->
         <div id="audit-wrapper" class="col-span-12 lg:col-span-4 flex flex-col space-y-3 lg:sticky lg:top-4 lg:self-start">
           <div class="flex gap-2">
-            <button onclick="resetTask()" class="flex-1 py-3 bg-white hover:bg-red-50 border-2 border-slate-200 hover:border-red-300 text-slate-600 hover:text-red-600 text-xs font-black uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm"><i class="fas fa-undo mr-1"></i>RESET</button>
-            <button id="auditBtn" onclick="handleAudit()" class="flex-[2.5] py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-black uppercase tracking-widest rounded-xl shadow-md transition-all flex items-center justify-center gap-2"><i id="auditBtnIcon" class="fas fa-search mr-1"></i><span id="auditBtnLabel">진단 실행</span></button>
+            <button onclick="resetTask()" class="flex-1 py-3 bg-white hover:bg-red-50 border-2 border-slate-200 hover:border-red-300 text-slate-600 hover:text-red-600 text-sm font-bold uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm"><i class="fas fa-undo mr-1"></i>RESET</button>
+            <button id="auditBtn" onclick="handleAudit()" class="flex-[2.5] py-3 bg-blue-600 hover:bg-blue-700 text-white text-[15px] font-black uppercase tracking-widest rounded-xl shadow-md transition-all flex items-center justify-center gap-2"><i id="auditBtnIcon" class="fas fa-search mr-1"></i><span id="auditBtnLabel">진단 실행</span></button>
           </div>
           <div class="audit-panel p-5 flex-1 flex flex-col shadow-sm overflow-y-auto">
             <h3 id="audit-title" class="text-[11px] font-black uppercase tracking-[.2em] mb-4 text-blue-600 border-b-2 border-slate-100 pb-3 flex items-center gap-2"><i id="audit-title-icon" class="fas fa-clipboard-check"></i><span id="audit-title-text">설계 무결성 진단 리포트</span></h3>
@@ -3039,7 +3048,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
               </div>
               <div class="space-y-2">
                 <h5 class="text-[11px] font-black flex items-center gap-2 border-l-4 border-blue-600 pl-3">
-                  <span class="w-4 h-4 rounded-full bg-blue-600 text-white text-[9px] font-black flex items-center justify-center shrink-0">3</span>
+                  <span class="w-4 h-4 rounded-full bg-blue-600 text-white text-[10px] font-black flex items-center justify-center shrink-0">3</span>
                   <span class="text-slate-700 uppercase tracking-widest">LED 전원장치(드라이버) 규격 선정</span>
                 </h5>
                 <div id="t3-driver-buttons" class="space-y-2">
@@ -3097,7 +3106,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                     <tr><td class="px-2 py-1.5 border border-slate-200 font-black text-blue-700">스마트 버튼</td><td class="px-2 py-1.5 border border-slate-200 text-slate-600">클릭 동작으로 설정된 일괄 제어(Scene) 시나리오 실행</td><td class="px-2 py-1.5 border border-slate-200 text-center font-black text-blue-700">Zigbee</td></tr>
                     <tr class="bg-slate-50"><td class="px-2 py-1.5 border border-slate-200 font-black text-amber-700">스마트 플러그</td><td class="px-2 py-1.5 border border-slate-200 text-slate-600">전원 원격 차단(On/Off) 및 가전기기 사용 전력량 모니터링</td><td class="px-2 py-1.5 border border-slate-200 text-center font-black text-amber-700">Zigbee/<br>Wi-Fi</td></tr>
                     <tr><td class="px-2 py-1.5 border border-slate-200 font-black text-amber-700">스마트 스위치</td><td class="px-2 py-1.5 border border-slate-200 text-slate-600">조명 회로에 연결되어 전등의 전원 제어 및 자동화 수행</td><td class="px-2 py-1.5 border border-slate-200 text-center font-black text-amber-700">Zigbee/<br>Wi-Fi</td></tr>
-                    <tr class="bg-slate-50"><td class="px-2 py-1.5 border border-slate-200 font-black text-rose-700">적외선 허브</td><td class="px-2 py-1.5 border border-slate-200 text-slate-600">비연결형 가전(TV·에어컨 등)의 리모컨 신호를 복제하여 앱으로 제어</td><td class="px-2 py-1.5 border border-slate-200 text-center font-black text-rose-700">Wi-Fi</td></tr>
+                    <tr class="bg-slate-50"><td class="px-2 py-1.5 border border-slate-200 font-black text-rose-700">스마트 IR 리모컨</td><td class="px-2 py-1.5 border border-slate-200 text-slate-600">비연결형 가전(TV·에어컨 등)의 리모컨 신호를 복제하여 앱으로 제어</td><td class="px-2 py-1.5 border border-slate-200 text-center font-black text-rose-700">Wi-Fi</td></tr>
                     <tr><td class="px-2 py-1.5 border border-slate-200 font-black text-rose-700">IP 카메라</td><td class="px-2 py-1.5 border border-slate-200 text-slate-600">실시간 영상 데이터 전송 및 원격 모니터링·동작 감지 녹화</td><td class="px-2 py-1.5 border border-slate-200 text-center font-black text-rose-700">Wi-Fi</td></tr>
                     <tr class="bg-slate-50"><td class="px-2 py-1.5 border border-slate-200 font-black text-purple-700">스마트 도어락</td><td class="px-2 py-1.5 border border-slate-200 text-slate-600">암호 외 앱 제어, 출입 이력(Log) 관리 및 귀가 시나리오 연동</td><td class="px-2 py-1.5 border border-slate-200 text-center font-black text-purple-700">Zigbee/<br>Z-Wave</td></tr>
                     <tr><td class="px-2 py-1.5 border border-slate-200 font-black text-blue-700">온습도 센서</td><td class="px-2 py-1.5 border border-slate-200 text-slate-600">온도·습도 정밀 측정 및 냉난방 기기 자동 제어 기준 제공</td><td class="px-2 py-1.5 border border-slate-200 text-center font-black text-blue-700">Zigbee</td></tr>
@@ -3179,15 +3188,15 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                 <div class="grid grid-cols-3 gap-1.5 mb-1">
                   <button class="t18-mode-btn p-2.5 rounded-lg bg-white border-2 border-slate-200 text-slate-700 hover:border-purple-400 hover:bg-purple-50 hover:text-purple-700 transition-all flex items-center justify-center gap-1.5 shadow-sm" data-t18-mode="home" onclick="t18SelectMode('home')">
                     <span style="font-size:16px;">🏠</span>
-                    <span class="text-[12px] font-black leading-tight">귀가 모드</span>
+                    <span class="text-xs font-black leading-tight">귀가 모드</span>
                   </button>
                   <button class="t18-mode-btn p-2.5 rounded-lg bg-white border-2 border-slate-200 text-slate-700 hover:border-indigo-400 hover:bg-indigo-50 hover:text-indigo-700 transition-all flex items-center justify-center gap-1.5 shadow-sm" data-t18-mode="sleep" onclick="t18SelectMode('sleep')">
                     <span style="font-size:16px;">🌙</span>
-                    <span class="text-[12px] font-black leading-tight">취침 모드</span>
+                    <span class="text-xs font-black leading-tight">취침 모드</span>
                   </button>
                   <button class="t18-mode-btn p-2.5 rounded-lg bg-white border-2 border-slate-200 text-slate-700 hover:border-orange-400 hover:bg-orange-50 hover:text-orange-700 transition-all flex items-center justify-center gap-1.5 shadow-sm" data-t18-mode="commute" onclick="t18SelectMode('commute')">
                     <span style="font-size:16px;">🚶</span>
-                    <span class="text-[12px] font-black leading-tight">출근 모드</span>
+                    <span class="text-xs font-black leading-tight">출근 모드</span>
                   </button>
                 </div>
                 <!-- 아코디언 정보 박스 (활성 모드 정보 + 실행 버튼) -->
@@ -3206,7 +3215,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                   <i class="fas fa-satellite-dish text-blue-500"></i>
                 </div>
                 <div class="border-t border-slate-100 pt-1.5 mt-1.5">
-                  <p class="text-[12px] font-normal text-slate-500 leading-relaxed">AP·허브·공유기·세대단자함 — 신호가 오가는 무선의 길</p>
+                  <p class="text-xs font-normal text-slate-500 leading-relaxed">AP·허브·공유기·세대단자함 — 신호가 오가는 무선의 길</p>
                   <div class="flex gap-1.5 mt-2">
                     <button onclick="event.stopPropagation(); t18SelectLayer('L3'); t18RunMode('comm_local');" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md font-black text-[11px] text-white transition-all hover:opacity-90" style="background:#1e40af;white-space:nowrap;">▶ 로컬 처리</button>
                     <button onclick="event.stopPropagation(); t18SelectLayer('L3'); t18RunMode('comm_cloud');" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md font-black text-[11px] text-white transition-all hover:opacity-90" style="background:#2563eb;white-space:nowrap;">▶ 클라우드 처리</button>
@@ -3224,7 +3233,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                   <i class="fas fa-home text-emerald-500"></i>
                 </div>
                 <div class="border-t border-slate-100 pt-1.5 mt-1.5">
-                  <p class="text-[12px] font-normal text-slate-500 leading-relaxed">mmWave·공기질·도어·온습도·가스 — 공간을 감각하는 눈</p>
+                  <p class="text-xs font-normal text-slate-500 leading-relaxed">mmWave·공기질·도어·온습도·가스 — 공간을 감각하는 눈</p>
                   <div class="flex gap-1.5 mt-2">
                     <button onclick="event.stopPropagation(); t18SelectLayer('L2'); t18RunMode('spatial');" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md font-black text-[11px] text-white transition-all hover:opacity-90" style="background:#059669;white-space:nowrap;">▶ 데이터 수집 따라가기</button>
                   </div>
@@ -3241,7 +3250,7 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
                   <i class="fas fa-bolt text-amber-500"></i>
                 </div>
                 <div class="border-t border-slate-100 pt-1.5 mt-1.5">
-                  <p class="text-[12px] font-normal text-slate-500 leading-relaxed">분전반·릴레이·SMPS·스위치·조명 — 가장 근본의 인프라</p>
+                  <p class="text-xs font-normal text-slate-500 leading-relaxed">분전반·릴레이·SMPS·스위치·조명 — 가장 근본의 인프라</p>
                   <div class="flex gap-1.5 mt-2">
                     <button onclick="event.stopPropagation(); t18SelectLayer('L1'); t18RunMode('electric');" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md font-black text-[11px] text-white transition-all hover:opacity-90" style="background:#b45309;white-space:nowrap;">▶ 전기 흐름 따라가기</button>
                   </div>
@@ -3279,6 +3288,19 @@ SMPS는 발전소처럼 <b>24V 직류 전원만 공급</b>합니다. 이 전원�
 
 
 <script>
+/* ── 랜딩 헤더 실제 높이를 측정해 --intro-header-h 갱신 (스크롤 규격 정확화) ── */
+function syncIntroHeaderH(){
+  const pi = document.getElementById('page-intro');
+  if(!pi) return;
+  const hd = pi.querySelector('header');
+  if(!hd) return;
+  const h = Math.round(hd.getBoundingClientRect().height);
+  if(h>0) pi.style.setProperty('--intro-header-h', h + 'px');
+}
+window.addEventListener('load', syncIntroHeaderH);
+window.addEventListener('resize', syncIntroHeaderH);
+document.addEventListener('DOMContentLoaded', syncIntroHeaderH);
+
 /* ═══════════════════════════════════════
    전역 상태
 ═══════════════════════════════════════ */
@@ -3463,7 +3485,7 @@ function closeSim(){
 ═══════════════════════════════════════ */
 const hints={
     t18:``,
-    t01:`<button onclick="toggleHints('t01')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t01-hints-arrow" class="normal-case">▸</span></button>
+    t01:`<button onclick="toggleHints('t01')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t01-hints-arrow" class="normal-case">▸</span></button>
          <div id="t01-hints-dynamic" class="hidden"><ul class="text-xs text-slate-700 font-normal space-y-2 leading-relaxed">
            <li>① 분전반의 터미널 두 지점을 순서대로 클릭하여 전압을 측정합니다.</li>
            <li>② L → N 클릭 → 상전압 측정 (220V ±10% 범위이면 정상)</li>
@@ -3472,7 +3494,7 @@ const hints={
            <li>⑤ 모든 측정 완료 후 <strong>[진단 실행]</strong> 클릭</li>
            <li class="text-slate-400 text-[10px] pt-1 border-t border-amber-100">※ 매 실행 시 측정 시나리오는 랜덤으로 변경됩니다.</li>
          </ul></div>`,
-    t02:`<button onclick="toggleHints('t02')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t02-hints-arrow" class="normal-case">▸</span></button>
+    t02:`<button onclick="toggleHints('t02')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t02-hints-arrow" class="normal-case">▸</span></button>
          <div id="t02-hints-dynamic" class="hidden"><ul class="text-xs text-slate-700 font-normal space-y-2 leading-relaxed">
            <li>① 상단 <strong>[계통 방식]</strong> 선택 (Single Zone / Dual Bank)</li>
            <li>② 설치할 조명 기기 선택</li>
@@ -3481,7 +3503,7 @@ const hints={
            <li>⑤ 각 회로의 부하 합계 × 1.25 이상 SMPS 용량 확인</li>
            <li>⑥ 모든 설정 완료 후 <strong>[진단 실행]</strong> 클릭</li>
          </ul></div>`,
-    t03:`<button onclick="toggleHints('t03')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t03-hints-arrow" class="normal-case">▸</span></button>
+    t03:`<button onclick="toggleHints('t03')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t03-hints-arrow" class="normal-case">▸</span></button>
          <div id="t03-hints-dynamic" class="hidden"><ul class="text-xs text-slate-700 font-normal space-y-2 leading-relaxed">
            <li><strong class="text-blue-600">① 구역별 부하 입력</strong><br>슬라이더로 거실(m) · 주방(set) · 복도(m) 설치 규모를 입력하면 총 부하(W)가 자동 산출됩니다.</li>
            <li><strong class="text-purple-600">② 조명 타입 선택</strong><br>
@@ -3494,7 +3516,7 @@ const hints={
            </li>
            <li>✅ <strong>[진단 실행]</strong> 클릭</li>
          </ul></div>`,
-    t04:`<button onclick="toggleHints('t04')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t04-hints-arrow" class="normal-case">▸</span></button>
+    t04:`<button onclick="toggleHints('t04')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t04-hints-arrow" class="normal-case">▸</span></button>
          <div id="t04-hints-dynamic" class="hidden"><ul class="text-xs text-slate-700 font-normal space-y-2 leading-relaxed">
            <li>① <strong style="color:#f43f5e">mmWave(빨강)</strong> → 안방 한가운데 파란 원에 드래그</li>
            <li>② <strong style="color:#d97706">PIR(주황)</strong> → 거실 위쪽 코너 파란 원에 드래그</li>
@@ -3502,21 +3524,21 @@ const hints={
            <li>④ <strong style="color:#3b82f6">도어센서(파랑)</strong> → 현관 중문 프레임에 드래그</li>
            <li>⑤ <strong>[진단 실행]</strong> 클릭</li>
          </ul></div>`,
-    t05:`<button onclick="toggleHints('t05')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t05-hints-arrow" class="normal-case">▸</span></button>
+    t05:`<button onclick="toggleHints('t05')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t05-hints-arrow" class="normal-case">▸</span></button>
          <div id="t05-hints-dynamic" class="hidden"><ul class="text-xs text-slate-700 font-normal space-y-2 leading-relaxed">
            <li>① 스펙트럼 그래프에서 <strong style="color:#dc2626">빨간 영역</strong>이 Wi-Fi 간섭 구역입니다.</li>
            <li>② 빨간 영역을 피해서 채널 버튼을 클릭하세요.</li>
            <li>③ RSSI 와 LQI 수치를 확인하세요.</li>
            <li>④ <strong>[진단 실행]</strong> 클릭 — RSSI ≥ −70 dBm, LQI ≥ 200이면 합격</li>
          </ul></div>`,
-    t06:`<button onclick="toggleHints('t06')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t06-hints-arrow" class="normal-case">▸</span></button>
+    t06:`<button onclick="toggleHints('t06')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t06-hints-arrow" class="normal-case">▸</span></button>
          <div id="t06-hints-dynamic" class="hidden"><ul class="text-xs text-slate-700 font-normal space-y-2 leading-relaxed">
            <li>① <strong style="color:#3b82f6">파란 노드(Main AP)</strong>를 평면도 위에서 드래그하세요.</li>
            <li>② 모든 방의 신호 수치가 <strong>−65 이상</strong>이 되도록 위치를 조정하세요.</li>
            <li>③ 음영이 생기면 <strong>[Mesh OFF]</strong> 버튼을 눌러 메시 노드를 추가하세요.</li>
            <li>④ <strong>[진단 실행]</strong> 클릭</li>
          </ul></div>`,
-    t07:`<button onclick="toggleHints('t07')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t07-hints-arrow" class="normal-case">▸</span></button>
+    t07:`<button onclick="toggleHints('t07')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t07-hints-arrow" class="normal-case">▸</span></button>
          <div id="t07-hints-dynamic" class="hidden"><ul class="text-xs text-slate-700 font-normal space-y-2 leading-relaxed">
            <li>① IF 시간 조건 → <strong>평일 14:00~17:00</strong> 선택</li>
            <li>② IF 감지 센서 → <strong>안방 mmWave 센서</strong> 선택</li>
@@ -3527,7 +3549,7 @@ const hints={
            <li>⑦ <strong>[진단 실행]</strong> 클릭</li>
            <li class="text-slate-400 text-[10px] pt-1 border-t border-amber-100">※ 조건 사이 연산자는 AND가 정답입니다.</li>
          </ul></div>`,
-    t08:`<button onclick="toggleHints('t08')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t08-hints-arrow" class="normal-case">▸</span></button>
+    t08:`<button onclick="toggleHints('t08')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t08-hints-arrow" class="normal-case">▸</span></button>
          <div id="t08-hints-dynamic" class="hidden"><ul class="text-xs text-slate-700 font-normal space-y-2 leading-relaxed">
            <li>① IF 시간 조건 → <strong>평일 07:30~08:30</strong> 선택</li>
            <li>② IF 감지 센서 → <strong>중문 도어센서</strong> 선택</li>
@@ -3538,7 +3560,7 @@ const hints={
            <li>⑦ <strong>[진단 실행]</strong> 클릭</li>
            <li class="text-slate-400 text-[10px] pt-1 border-t border-amber-100">※ 조건 사이 연산자는 AND가 정답입니다.</li>
          </ul></div>`,
-    t09:`<button onclick="toggleHints('t09')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t09-hints-arrow" class="normal-case">▸</span></button>
+    t09:`<button onclick="toggleHints('t09')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t09-hints-arrow" class="normal-case">▸</span></button>
          <div id="t09-hints-dynamic" class="hidden"><ul class="text-xs text-slate-700 font-normal space-y-2 leading-relaxed">
            <li>① IF 감지 센서 → <strong>주방 CO₂ 센서</strong> 선택</li>
            <li>② IF 임계값 → <strong>1,000 ppm 초과 감지 시</strong> 선택</li>
@@ -3547,13 +3569,13 @@ const hints={
            <li>⑤ ELSE → <strong>환기팬 약풍으로 전환</strong> 선택</li>
            <li>⑥ <strong>[진단 실행]</strong> 클릭</li>
          </ul></div>`,
-    t15:`<button onclick="toggleHints('t15')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📋 풀이 노트 보기 <span id="t15-hints-arrow" class="normal-case">▸</span></button>
+    t15:`<button onclick="toggleHints('t15')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📋 풀이 노트 보기 <span id="t15-hints-arrow" class="normal-case">▸</span></button>
          <ul id="t15-hints-dynamic" class="hidden text-xs text-slate-700 font-normal space-y-2 leading-relaxed">
            <li class="text-slate-500 font-normal">단계를 선택하면 해당 해설이 표시됩니다.</li>
          </ul>`,
-    t10:`<button onclick="toggleHints('t10')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t10-hints-arrow" class="normal-case">▸</span></button>
+    t10:`<button onclick="toggleHints('t10')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t10-hints-arrow" class="normal-case">▸</span></button>
          <div id="t10-hints-dynamic" class="hidden"><div id="t10-hint-answer" class="space-y-1"></div></div>`,
-    t11:`<button onclick="toggleHints('t11')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t11-hints-arrow" class="normal-case">▸</span></button>
+    t11:`<button onclick="toggleHints('t11')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t11-hints-arrow" class="normal-case">▸</span></button>
          <div id="t11-hints-dynamic" class="hidden"><div class="space-y-3 text-xs font-bold text-slate-700">
            <div>
              <p class="font-black text-amber-700 mb-1.5">① 설정 순서 정답 (6단계)</p>
@@ -3577,16 +3599,16 @@ const hints={
              </ul>
            </div>
          </div></div>`,
-    t16:`<button onclick="toggleHints('t16')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📋 풀이 노트 보기 <span id="t16-hints-arrow" class="normal-case">▸</span></button>
+    t16:`<button onclick="toggleHints('t16')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📋 풀이 노트 보기 <span id="t16-hints-arrow" class="normal-case">▸</span></button>
          <ul id="t16-hints-dynamic" class="hidden text-xs text-slate-700 font-normal space-y-2 leading-relaxed">
            <li class="text-slate-500 font-normal">단계를 선택하면 학습 가이드가 표시됩니다.</li>
          </ul>`,
-    t17:`<button onclick="toggleHints('t17')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📋 풀이 노트 보기 <span id="t17-hints-arrow" class="normal-case">▸</span></button>
+    t17:`<button onclick="toggleHints('t17')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📋 풀이 노트 보기 <span id="t17-hints-arrow" class="normal-case">▸</span></button>
          <ul id="t17-hints-dynamic" class="hidden text-xs text-slate-700 font-normal space-y-2 leading-relaxed">
            <li class="text-slate-500 font-normal">단계를 선택하면 학습 가이드가 표시됩니다.</li>
          </ul>`,
-    t12:`<button onclick="toggleHints('t12')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📋 풀이 노트 보기 <span id="t12-hints-arrow" class="normal-case">▸</span></button>\n         <ul id="t12-hints-dynamic" class="hidden text-xs text-slate-700 font-normal space-y-2 leading-relaxed">\n           <li class="text-slate-500 font-normal">단계를 선택하면 학습 가이드가 표시됩니다.</li>\n         </ul>`,
-    t13:`<button onclick="toggleHints('t13')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t13-hints-arrow" class="normal-case">▸</span></button>
+    t12:`<button onclick="toggleHints('t12')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📋 풀이 노트 보기 <span id="t12-hints-arrow" class="normal-case">▸</span></button>\n         <ul id="t12-hints-dynamic" class="hidden text-xs text-slate-700 font-normal space-y-2 leading-relaxed">\n           <li class="text-slate-500 font-normal">단계를 선택하면 학습 가이드가 표시됩니다.</li>\n         </ul>`,
+    t13:`<button onclick="toggleHints('t13')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t13-hints-arrow" class="normal-case">▸</span></button>
          <div id="t13-hints-dynamic" class="hidden"><div class="space-y-1.5 text-xs font-normal text-slate-700">
            <div><p class="font-black text-amber-700 mb-1">[복지·주거] 독거노인 응급안전안심서비스</p>
            <p>· 1단계: 복합 시계열 · 연속+감지 혼합</p>
@@ -3607,7 +3629,7 @@ const hints={
            <p>· 4단계: Edge + Cloud 혼합</p>
            <p>· 5단계: DR 연계 + 리포트 + 보안 인증</p></div>
          </div></div>`,
-    t14:`<button onclick="toggleHints('t14')" class="w-full text-left text-[12px] font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t14-hints-arrow" class="normal-case">▸</span></button>
+    t14:`<button onclick="toggleHints('t14')" class="w-full text-left text-xs font-black text-amber-600 uppercase tracking-widest mb-2 border-b border-amber-200 pb-1.5 hover:text-amber-700 transition-colors">📖 과업 해설 보기 <span id="t14-hints-arrow" class="normal-case">▸</span></button>
          <div id="t14-hints-dynamic" class="hidden"><div class="space-y-1.5 text-xs font-normal text-slate-700">
            <div><p class="font-black text-amber-700 mb-1">[안전·교육] 아동 안전 모니터링</p>
            <p>· 1단계: 영상 데이터</p>
@@ -3660,8 +3682,8 @@ const isTheoryTask = id => theoryTasks.includes(id);
 
 function auditBtnMarkup(id){
     return isTheoryTask(id)
-        ? '<i class="fas fa-list-check mr-1"></i>분류 채점'
-        : '<i class="fas fa-search mr-1"></i>진단 실행';
+        ? '<i id="auditBtnIcon" class="fas fa-list-check mr-1"></i><span id="auditBtnLabel">분류 채점</span>'
+        : '<i id="auditBtnIcon" class="fas fa-search mr-1"></i><span id="auditBtnLabel">진단 실행</span>';
 }
 function restoreAuditBtn(){
     const btn=document.getElementById('auditBtn'); if(!btn) return;
@@ -3687,16 +3709,27 @@ function applyAuditPanelMode(id){
 
 function syncAuditBtn(){
   const ab=document.getElementById('auditBtn'); if(!ab) return;
-  let disable=false;
-  if(currentTask==='t17') disable=(typeof t17CurrentStep!=='undefined'&&t17CurrentStep!==2);
-  else if(currentTask==='t15') disable=(typeof t15CurrentStep!=='undefined'&&t15CurrentStep!==2);
-  else if(currentTask==='t16') disable=(typeof t16CurrentStep!=='undefined'&&t16CurrentStep!==2);
-  else if(currentTask==='t12') disable=(typeof t12CurrentStep!=='undefined'&&t12CurrentStep!==2);
+  const lbl=document.getElementById('auditBtnLabel');
+  let disable=false, step=null;
+  if(currentTask==='t17') step=(typeof t17CurrentStep!=='undefined')?t17CurrentStep:null;
+  else if(currentTask==='t15') step=(typeof t15CurrentStep!=='undefined')?t15CurrentStep:null;
+  else if(currentTask==='t16') step=(typeof t16CurrentStep!=='undefined')?t16CurrentStep:null;
+  else if(currentTask==='t12') step=(typeof t12CurrentStep!=='undefined')?t12CurrentStep:null;
   else { ab.disabled=false; ab.classList.remove('opacity-40','cursor-not-allowed'); ab.title=''; return; }
+
+  // 이론형 과업: 2단계(분류)에서만 채점 활성. 1단계=학습, 3단계=실무적용(채점없음)
+  disable = (step!==null && step!==2);
   ab.disabled=disable;
   ab.classList.toggle('opacity-40',disable);
   ab.classList.toggle('cursor-not-allowed',disable);
-  ab.title = disable ? '2단계(분류) 화면에서 활성화됩니다' : '';
+  if(disable){
+    if(step===1){ ab.title='1단계는 학습 단계입니다. 2단계(분류)에서 채점합니다.'; if(lbl) lbl.textContent='학습 단계'; }
+    else if(step===3){ ab.title='3단계는 실무 적용 학습 단계입니다. 채점은 2단계에서 진행합니다.'; if(lbl) lbl.textContent='실무 학습'; }
+    else { ab.title='2단계(분류) 화면에서 활성화됩니다'; }
+  } else {
+    ab.title='';
+    if(lbl) lbl.textContent='분류 채점';
+  }
 }
 
 function switchTask(id){
@@ -3840,7 +3873,7 @@ const t18Scenarios = {
             ['외부 습도','65%']
         ],
         pillars:['쾌적','편의'],
-        why:'스마트 도어락 NFC 모바일 키로 사용자 식별 → 개인 맞춤 자동화 즉시 발동.',
+        why:'가족 구성원마다 원하는 귀가 환경이 다릅니다 — 진짜 개인화 자동화는 "누가 왔는지"부터 정확히 구분하는 데서 시작됩니다.',
         parts:['door-entrance','hub','welcome-light','downlight-1','downlight-2','downlight-3','led-living','temp-humid','aircon','nest-hub'],
         steps:[
             '현관 스마트 도어락 NFC 인식 — "아빠" 사용자 식별 (모바일 키)',
@@ -3873,7 +3906,7 @@ const t18Scenarios = {
             [['aircon','on']],
             [['nest-hub','trigger']]
         ],
-        point:'단일 트리거(현관문)에 다중 자동화 동시 발동 + AI 환영 멘트 마무리'
+        point:'NFC 모바일 키로 "누구인지"까지 식별해, 단일 트리거로 조명·온도·AI 환영 멘트까지 다중 자동화를 동시 발동 — 개인화의 핵심은 감지가 아니라 식별입니다.'
     },
     sleep: {
         label:'🌙 취침 모드',
@@ -3885,7 +3918,7 @@ const t18Scenarios = {
             ['모드','야간 절전·수면 유도 모드']
         ],
         pillars:['쾌적','안전','절감'],
-        why:'음성 한 마디로 가족별 취침 환경 실현 — 소연이방 제외, 나머지 전환.',
+        why:'가족마다 잠드는 시간이 다른데, 방마다 다니며 소등하기는 번거롭습니다.',
         parts:['nest-hub','hub','led-living','downlight-master-1','downlight-master-2','downlight-master-3','led-bedroom','aircon','ceiling-bed2'],
         steps:[
             '네스트허브 ("헤이 구글, 소연이 빼고 다 잘꺼야" 음성 인식)',
@@ -3915,7 +3948,7 @@ const t18Scenarios = {
             [['aircon','off']],
             [['ceiling-bed2','on']]
         ],
-        point:'음성 자동화 — "구성원별 다른 환경" 동시 실현. 안방 재실 확인 후 수면 디밍 → 30분 자동 소등으로 에너지 절감.'
+        point:'음성 한 마디로 "소연이방만 제외"라는 예외까지 처리하고, 명령이 끝난 뒤엔 안방 mmWave가 재실을 재확인해 디밍→30분 자동소등으로 이어받는 것이 음성+센서 이중 제어의 핵심입니다.'
     },
     commute: {
         label:'🚶 출근 모드',
@@ -3927,7 +3960,7 @@ const t18Scenarios = {
             ['연동','월패드 ↔ 엘리베이터 (API 개방형 또는 Matter 브릿지)']
         ],
         pillars:['편의','절감','안전'],
-        why:'평일 출근시간대 외출 시 시간 절약·에너지 절감·안전을 동시에 실현합니다.',
+        why:'바쁜 출근길, 엘리베이터를 기다리는 시간도 아깝고 깜빡 잊고 나온 가전이 없는지도 걱정됩니다.',
         parts:['door-middle','door-entrance','hub','wallpad','led-living','downlight-master-1','downlight-master-2','downlight-master-3','aircon','welcome-light','mmwave'],
         steps:[
             '중문 도어센서 (개방 감지 — 평일 07:30~08:30 출근시간대)',
@@ -3960,7 +3993,7 @@ const t18Scenarios = {
             [['led-living','off'],['downlight-master-1','off'],['downlight-master-2','off'],['downlight-master-3','off'],['aircon','off']],
             [['door-entrance','trigger'],['mmwave','trigger']]
         ],
-        point:'복합 트리거 + 외부 시스템 연동 — 공간 너머 확장 자동화 (월패드↔엘리베이터). mmWave 무감지 확인 후 절전·보안 발동 = 오작동 방지의 핵심 설계'
+        point:'중문 개방(1차 트리거)으로 월패드↔엘리베이터를 미리 연동 호출하고, mmWave 10분 무감지(2차 확인) 후에야 절전·보안을 발동 — 오작동 방지를 위해 트리거를 이중으로 검증하는 것이 핵심 설계입니다.'
     },
     electric:{
         label:'⚡ 전기 흐름',
@@ -3968,7 +4001,7 @@ const t18Scenarios = {
         colorBg:'rgba(217,119,6,.08)',
         info:[['공급 전압','AC 220V'],['주파수','60Hz'],['배선 방식','단상 2선식']],
         pillars:['안전'],
-        why:'분전반으로 인입된 220V 교류가 차단기·변환·제어를 거쳐 조명(부하)까지 흐르는, 모든 지능형홈의 기반이 되는 전기 공급 경로입니다.',
+        why:'지능형홈의 모든 기기는 결국 전기로 움직입니다 — 분전반에서 조명까지 전기가 안전하게 흐르는 경로를 알아야, 그 위에 얹는 통신·자동화 설계도 의미가 있습니다.',
         parts:['db','mcb','smps','relay','switch','led-bedroom','led-living','led-kitchen'],
         steps:[
             '분전반 — 교류 220V가 집으로 인입',
@@ -3988,7 +4021,8 @@ const t18Scenarios = {
             [['relay','on']],
             [['switch','on']],
             [['led-bedroom','on'],['led-living','on'],['led-kitchen','on']]
-        ]
+        ],
+        point:'차단기(MCB·ELB)가 과전류·누전을 먼저 막아낸 뒤에야 SMPS가 AC→DC 변환을 수행하는 순서 — 전기 안전 보호가 항상 전력 변환보다 앞선다는 것이 실무 설계의 원칙입니다.'
     }
 ,
     spatial:{
@@ -3997,8 +4031,8 @@ const t18Scenarios = {
         colorBg:'rgba(5,150,105,.08)',
         info:[['데이터 타입','이진형 / 수치형'],['포장','Zigbee'],['도착','허브']],
         pillars:['안전','쾌적'],
-        why:'센서는 물리량을 디지털 데이터로 바꾸는 출발점입니다. 데이터는 대부분 이진형(0/1) 또는 연속 수치형으로 떨어지며, Zigbee로 포장되어 허브로 모입니다.',
-        parts:['mmwave','temp-humid','air-quality','gas-detect','hub','mmwave-bedroom','mmwave-kitchen','mmwave-bath','mmwave-bed2'],
+        why:'지능형홈이 "알아서" 작동하려면 먼저 집 안 상황을 데이터로 읽어야 합니다 — 모든 자동화의 출발점은 센서입니다.',
+        parts:['mmwave','temp-humid','air-quality','gas-detect','water-leak','hub','mmwave-bedroom','mmwave-kitchen','mmwave-bath','mmwave-bed2'],
         steps:[
             'mmWave — 재실·낙상 감지 · 타입: 이진형(0/1) · 낙상=실시간, 재실=주기',
             '온습도 — 24.5℃·55% 측정 · 타입: 연속 수치형 · 주기(4시간)',
@@ -4007,16 +4041,17 @@ const t18Scenarios = {
             '→ 모든 데이터를 Zigbee로 포장(시리얼·타임스탬프)해 허브로 모음'
         ],
         stepParts:[
-            ['mmwave'],['temp-humid'],['air-quality'],['gas-detect'],
+            ['mmwave'],['temp-humid'],['air-quality'],['gas-detect','water-leak'],
             ['hub','mmwave-bedroom','mmwave-kitchen','mmwave-bath','mmwave-bed2']
         ],
         stepActions:[
             [['mmwave','on']],
             [['temp-humid','on']],
             [['air-quality','on']],
-            [['gas-detect','on']],
+            [['gas-detect','on'],['water-leak','on']],
             [['hub','on'],['mmwave-bedroom','on'],['mmwave-kitchen','on'],['mmwave-bath','on'],['mmwave-bed2','on']]
-        ]
+        ],
+        point:'이진형(0/1)은 즉시 대응이 필요한 이벤트에, 연속 수치형은 추세 분석에 쓰입니다 — 이 데이터 성격 차이가 다음 두 시나리오(로컬처리·클라우드처리)에서 처리 위치가 갈리는 기준이 됩니다.'
     },
     comm_local:{
         label:'🏠 로컬 처리',
@@ -4024,13 +4059,13 @@ const t18Scenarios = {
         colorBg:'rgba(30,64,175,.08)',
         info:[['처리','허브가 직접'],['대상','긴급·안전'],['핵심','인터넷 끊겨도 작동']],
         pillars:['안전'],
-        why:'화재·낙상·보안 같은 긴급 상황은 인터넷이 끊겨도 즉시 대응해야 합니다. 그래서 허브에 자동화 규칙을 내장해, 클라우드를 거치지 않고 현장에서 바로 처리합니다.',
+        why:'화재·낙상처럼 생명과 직결된 상황은 인터넷이 끊긴 그 순간에도 절대 늦으면 안 됩니다.',
         parts:['gas-detect','mmwave','door-entrance','hub'],
         steps:[
             '화재 감지 — 화재감지기 "화재=1" (이진형 0/1)',
             '낙상 감지 — mmWave "낙상=1" (이진형 0/1)',
             '보안 감지 — 현관문 미인증 개방 "침입=1" (이진형 0/1)',
-            '허브가 즉시 판단 — 인터넷 없이도 내장 규칙으로 현장에서 바로 대응',
+            '허브가 즉시 대응 — 센서가 이미 판별한 결과를 받아, 인터넷 없이도 내장 규칙으로 알림·경보를 즉시 실행',
             '효과 — 화재 조기진압 · 낙상 골든타임 확보 · 침입 예방 (생명·안전 보호)'
         ],
         stepParts:[['gas-detect'],['mmwave'],['door-entrance'],['hub'],['hub']],
@@ -4040,7 +4075,8 @@ const t18Scenarios = {
             [['door-entrance','on']],
             [['hub','on']],
             [['hub','on']]
-        ]
+        ],
+        point:'화재·낙상 여부의 판별은 센서 자체 칩이 수행하고, 그 결과(이진형 신호)만 받은 허브가 클라우드 없이 즉시 알림 규칙을 실행합니다 — "판별은 센서, 대응은 허브"로 역할이 나뉘는 것이 로컬 처리의 정확한 구조입니다.'
     },
     comm_cloud:{
         label:'☁️ 클라우드 처리',
@@ -4048,7 +4084,7 @@ const t18Scenarios = {
         colorBg:'rgba(37,99,235,.08)',
         info:[['처리 위치','클라우드 서버'],['대상','추세·패턴'],['전송','주기']],
         pillars:['쾌적'],
-        why:'온습도·공기질 같은 연속 수치형 추세 데이터는 대량 분석·학습이 필요합니다. 허브→공유기→단자함을 거쳐 클라우드로 전송돼 패턴을 분석합니다.',
+        why:'온습도·공기질처럼 당장 위험하진 않지만, 오래 쌓인 패턴을 알아야 집이 더 똑똑해지는 데이터도 있습니다.',
         parts:['temp-humid','air-quality','hub','wifi-ap','router','distribution-box','cloud'],
         steps:[
             '추세 데이터 발생 — 온습도·공기질 (연속 수치형)',
@@ -4068,7 +4104,8 @@ const t18Scenarios = {
             [['cloud','on']],
             [['cloud','on']],
             [['cloud','on']]
-        ]
+        ],
+        point:'온습도·공기질처럼 연속 수치형(추세) 데이터는 클라우드로 보내 대량 분석 — 같은 원칙이 클라우드 처리에 적용된 사례이며, Edge·Cloud가 역할을 나누는 것이 하이브리드 지능형홈의 핵심입니다.'
     }
 };
 
@@ -4193,7 +4230,7 @@ function t18SelectMode(mode){
         }
         infoBox.innerHTML=`
             <div class="flex items-center justify-between mb-1.5">
-                <span class="text-[12px] font-black" style="color:${sc.color};">${sc.label}</span>
+                <span class="text-xs font-black" style="color:${sc.color};">${sc.label}</span>
                 <span class="flex gap-1">${pillarsHtml}</span>
             </div>
             <div class="space-y-0.5 border-t pt-1.5 mb-2" style="border-color:${sc.color}55;">
@@ -4337,9 +4374,15 @@ function t18SelectLayer(layer){
     document.querySelectorAll('.t18-part').forEach(p=>{
         const pLayer=p.dataset.layer;
         p.style.filter='';p.style.boxShadow='';p.style.zIndex='';
-        p.classList.remove('state-on','state-off');
+        p.classList.remove('state-on','state-off','t18-cue');
         if(pLayer===layer){p.style.opacity='1';p.style.pointerEvents='auto';}
         else{p.style.opacity='0.12';p.style.pointerEvents='none';}
+    });
+    // 3-b. 활성 레이어 기기에 은은한 시선 유도 큐 (1회)
+    requestAnimationFrame(()=>{
+        document.querySelectorAll('.t18-part').forEach(p=>{
+            if(p.dataset.layer===layer) p.classList.add('t18-cue');
+        });
     });
     // 4. 분전반 박스
     document.querySelectorAll('[data-layer="L1"]:not(.t18-part)').forEach(b=>{
@@ -4385,17 +4428,17 @@ function t18UpdateGuide(mode){
     const stepsHtml=sc.steps.map((s,i)=>`<li data-step-idx="${i}" class="flex gap-1.5"><span class="font-black flex-shrink-0" style="color:${sc.color};">${i+1}.</span><span class="text-slate-700">${s}</span></li>`).join('');
     guide.innerHTML=`
         <div class="flex items-center justify-between mb-1.5">
-            <div class="text-[12px] font-black" style="color:${sc.color};">${sc.label}</div>
+            <div class="text-xs font-black" style="color:${sc.color};">${sc.label}</div>
             <div class="flex gap-1">${pillarsHtml}</div>
         </div>
-        <p class="text-[12px] text-slate-700 leading-snug mb-2 pb-2 border-b" style="border-color:${sc.color}33;">
-            <span style="color:${sc.color};font-weight:900;">💡 </span>${sc.why}
+        <p class="text-xs text-slate-700 leading-snug mb-2 pb-2 border-b" style="border-color:${sc.color}33;">
+            <span style="color:${sc.color};font-weight:900;">💡 필요성 — </span>${sc.why}
         </p>
         <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">작동 순서</p>
-        <ul class="space-y-1 text-[12px] leading-snug mb-2">${stepsHtml}</ul>
-        <div class="border-t pt-1.5 mt-1.5 text-[10px] font-bold text-slate-600" style="border-color:${sc.color}33;">
-            🎯 ${sc.point}
-        </div>
+        <ul class="space-y-1 text-xs leading-snug mb-2">${stepsHtml}</ul>
+        ${sc.point ? `<div class="border-t pt-1.5 mt-1.5 text-[11px] font-bold text-slate-600" style="border-color:${sc.color}33;">
+            🎯 기술 핵심 — ${sc.point}
+        </div>` : ''}
     `;
 }
 
@@ -4405,6 +4448,8 @@ function t18InitHover(){
     const span=bar.querySelector('span');
     const icon=bar.querySelector('i');
     document.querySelectorAll('.t18-part').forEach(p=>{
+        // 큐 애니메이션 끝나면 클래스 정리 (z-index 등 원복)
+        p.addEventListener('animationend',(e)=>{ if(e.animationName==='t18PartCue') p.classList.remove('t18-cue'); });
         p.addEventListener('mouseenter',()=>{
             const id=p.dataset.id;
             const info=t18PartInfo[id];
@@ -4894,7 +4939,7 @@ const t10DevicePool=[
   {id:'btn',   label:'스마트 버튼',     conn:['Zigbee'],            badge:'bg-blue-100 text-blue-700'},
   {id:'plug',  label:'스마트 플러그',   conn:['Zigbee','Wi-Fi'],    badge:'bg-amber-100 text-amber-700'},
   {id:'sw',    label:'스마트 스위치',   conn:['Zigbee','Wi-Fi'],    badge:'bg-amber-100 text-amber-700'},
-  {id:'ir',    label:'적외선 허브',     conn:['Wi-Fi'],             badge:'bg-rose-100 text-rose-700'},
+  {id:'ir',    label:'스마트 IR 리모컨',     conn:['Wi-Fi'],             badge:'bg-rose-100 text-rose-700'},
   {id:'cam',   label:'IP 카메라',       conn:['Wi-Fi'],             badge:'bg-rose-100 text-rose-700'},
   {id:'lock',  label:'스마트 도어락',   conn:['Zigbee','Z-Wave'],   badge:'bg-purple-100 text-purple-700'},
   {id:'leak',  label:'누수감지기',      conn:['Zigbee'],            badge:'bg-blue-100 text-blue-700'},
@@ -4948,7 +4993,7 @@ function t10UpdateConnect(){
   list.innerHTML=checkedIds.map(id=>{
     const dev=t10DevicePool.find(d=>d.id===id);
     if(id==='hub') return `<div class="flex items-center gap-2 p-2 rounded-xl bg-emerald-50 border border-emerald-200"><span class="text-xs font-bold text-slate-700 flex-1">${dev.label}</span><span class="text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700">필수 인프라</span></div>`;
-    return `<div class="flex items-center gap-2 p-2 rounded-xl border border-slate-200 bg-slate-50"><span class="text-xs font-bold text-slate-700 flex-1">${dev.label}</span><select id="t10-conn-${id}" class="text-xs font-bold border-2 border-slate-200 rounded-lg px-2 py-1 bg-white focus:border-blue-400 focus:outline-none"><option value="">-- 선택 --</option>${t10ConnOptions.map(o=>`<option value="${o}">${o}</option>`).join('')}</select></div>`;
+    return `<div class="flex items-center gap-2 p-2 rounded-xl border border-slate-200 bg-slate-50"><span class="text-xs font-bold text-slate-700 flex-1">${dev.label}</span><select id="t10-conn-${id}" class="text-[13px] font-bold border-2 border-slate-200 rounded-lg px-2 py-1 bg-white focus:border-blue-400 focus:outline-none"><option value="">-- 선택 --</option>${t10ConnOptions.map(o=>`<option value="${o}">${o}</option>`).join('')}</select></div>`;
   }).join('');
 }
 
@@ -4957,18 +5002,18 @@ function selectT10Scene(scene){
   ['bedroom','living','kitchen'].forEach(s=>{
     const tab=document.getElementById('t10-tab-'+s);
     if(!tab) return;
-    tab.className=s===scene?'flex-1 py-2 text-sm font-black rounded-xl border-2 border-slate-700 bg-slate-700 text-white transition-all':'flex-1 py-2 text-sm font-black rounded-xl border-2 border-slate-200 bg-white text-slate-500 transition-all';
+    tab.className=s===scene?'flex-1 py-2.5 text-[15px] font-black rounded-xl border-2 border-slate-700 bg-slate-700 text-white transition-all':'flex-1 py-2.5 text-[15px] font-black rounded-xl border-2 border-slate-200 bg-white text-slate-500 transition-all';
   });
   const sc=t10Scenes[scene];
   // [실습 과제] 동적 갱신 - 시나리오 제목 + 액션
   const taskDesc = document.getElementById('t10-task-desc');
   if(taskDesc){
     const taskMsgs = {
-      bedroom: `<p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 침실 환경에서 숙면 유지·간편 제어·레거시 가전 통합을 위한 지능형홈 기기를 선정하고, 각 기기의 통신 방식을 올바르게 매칭하십시오.</strong></p>
+      bedroom: `<p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 침실 환경에서 숙면 유지·간편 제어·레거시 가전 통합을 위한 지능형홈 기기를 선정하고, 각 기기의 통신 방식을 올바르게 매칭하십시오.</strong></p>
 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 우측 참고표를 활용하여 기기 특성을 파악한 뒤 [진단 실행]을 클릭하십시오.</p>`,
-      living: `<p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 거실 공간에서 정지 재실 유지·구형 가전 통합·외출 자동 절전을 위한 지능형홈 기기를 선정하고, 각 기기의 통신 방식을 올바르게 매칭하십시오.</strong></p>
+      living: `<p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 거실 공간에서 정지 재실 유지·구형 가전 통합·외출 자동 절전을 위한 지능형홈 기기를 선정하고, 각 기기의 통신 방식을 올바르게 매칭하십시오.</strong></p>
 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 우측 참고표를 활용하여 기기 특성을 파악한 뒤 [진단 실행]을 클릭하십시오.</p>`,
-      kitchen: `<p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 주방 공간에서 가스·연기·누수 안전 모니터링과 환기 자동화를 위한 지능형홈 기기를 선정하고, 각 기기의 통신 방식을 올바르게 매칭하십시오.</strong></p>
+      kitchen: `<p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 주방 공간에서 가스·연기·누수 안전 모니터링과 환기 자동화를 위한 지능형홈 기기를 선정하고, 각 기기의 통신 방식을 올바르게 매칭하십시오.</strong></p>
 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 우측 참고표를 활용하여 기기 특성을 파악한 뒤 [진단 실행]을 클릭하십시오.</p>`
     };
     if(taskMsgs[scene]) taskDesc.innerHTML = taskMsgs[scene];
@@ -5034,7 +5079,7 @@ const t11ErrorItems=[
   {id:'e4', scene:'원격 외출 상태(외부망)에서 스마트폰 앱을 통한 전 기기 제어가 불가함',
    options:['허브와 외부 인터넷(클라우드 서버) 간 연결 단절','허브 펌웨어 오류','Zigbee 채널 간섭','스마트폰 블루투스 비활성화'],
    correct:'허브와 외부 인터넷(클라우드 서버) 간 연결 단절'},
-  {id:'e5', scene:'Wi-Fi 연동 가전(IP 카메라, 적외선 허브)만 간헐적으로 연결이 끊김',
+  {id:'e5', scene:'Wi-Fi 연동 가전(IP 카메라, 스마트 IR 리모컨)만 간헐적으로 연결이 끊김',
    options:['무선 공유기(AP) 채널 간섭 또는 재시작 필요','허브 Zigbee 채널 문제','기기 펌웨어 오류','스마트폰 Wi-Fi 설정 오류'],
    correct:'무선 공유기(AP) 채널 간섭 또는 재시작 필요'},
 ];
@@ -5057,7 +5102,7 @@ function initT11(){
         <p class="text-[11px] font-black text-red-700 mb-1">시나리오 ${String.fromCharCode(65+i)}</p>
         <p class="text-xs font-bold text-slate-700">${e.scene}</p>
       </div>
-      <select id="t11-err-${e.id}" class="w-full text-xs font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-white focus:border-blue-400 focus:outline-none">
+      <select id="t11-err-${e.id}" class="w-full text-[13px] font-bold border-2 border-slate-200 rounded-xl px-3 py-2 bg-white focus:border-blue-400 focus:outline-none">
         <option value="">-- 원인 선택 --</option>
         ${e.options.map(o=>`<option value="${o}">${o}</option>`).join('')}
       </select>
@@ -5686,7 +5731,7 @@ const t13Scenes = {
     elder:{
         tab:'elder',
         title:'[복지·주거분야] 독거노인 응급안전안심서비스',
-        scenario:'국내 독거 노인은 200만 명을 넘어섰고, 고독사는 매년 증가하고 있습니다. 이 문제 해결을 위한 AI 시스템을 아래 설계 조건을 참조해서 해결하시오.',
+        scenario:'국내 독거 노인은 200만 명을 넘어섰고(국가데이터처 「국민 삶의 질 2025」, 2024년 기준 229만 명), 고독사는 매년 증가하고 있습니다. 이 문제 해결을 위한 AI 시스템을 아래 설계 조건을 참조해서 해결하시오.',
         conditions:['설치 기기: mmWave 레이더 센서, 스마트플러그','목표: 일상 패턴 이상 자동 감지','연계: 보호자 확인 및 응급기관 연계'],
         hw:[
             {name:'mmWave 레이더 센서',loc:'안방 천장 중앙',proto:'Zigbee',spec:'비접촉·비카메라 / 정지 상태도 감지 / 개인 식별 불가 / 반경 5m 360°',cycle:'1초'},
@@ -5797,11 +5842,11 @@ function selectT13Scene(scene){
     const bannerDesc = document.querySelector('#screen-t13 .task-banner div');
     if(bannerDesc) {
         const taskMsgs = {
-            elder: `<p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 국내 독거 노인 200만 명, 고독사 증가에 대응하기 위해 mmWave 센서·스마트플러그로 일상 패턴 이상을 자동 감지하고 보호자·응급기관과 연계하는 AI 기술 스택을 5단계로 설계하십시오.</strong></p>
+            elder: `<p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 국내 독거 노인 200만 명, 고독사 증가에 대응하기 위해 mmWave 센서·스마트플러그로 일상 패턴 이상을 자동 감지하고 보호자·응급기관과 연계하는 AI 기술 스택을 5단계로 설계하십시오.</strong></p>
 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 5단계 설계를 모두 완료한 후 [진단 실행]을 클릭하십시오.</p>`,
-            sleep: `<p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 충분히 잤는데도 아침이 힘든 원인을 분석하기 위해 수면 단계·생체 신호·실내 환경 데이터를 통합 분석하고 조명·공조를 자동 제어하는 AI 기술 스택을 5단계로 설계하십시오.</strong></p>
+            sleep: `<p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 충분히 잤는데도 아침이 힘든 원인을 분석하기 위해 수면 단계·생체 신호·실내 환경 데이터를 통합 분석하고 조명·공조를 자동 제어하는 AI 기술 스택을 5단계로 설계하십시오.</strong></p>
 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 5단계 설계를 모두 완료한 후 [진단 실행]을 클릭하십시오.</p>`,
-            energy: `<p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 재실 여부와 가전별 전력 소비 패턴을 학습하여 불필요한 전력 사용을 자동 차단하고, 실시간 절감 리포트를 제공하는 AI 기술 스택을 5단계로 설계하십시오.</strong></p>
+            energy: `<p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 재실 여부와 가전별 전력 소비 패턴을 학습하여 불필요한 전력 사용을 자동 차단하고, 실시간 절감 리포트를 제공하는 AI 기술 스택을 5단계로 설계하십시오.</strong></p>
 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 5단계 설계를 모두 완료한 후 [진단 실행]을 클릭하십시오.</p>`
         };
         if(taskMsgs[scene]) bannerDesc.innerHTML = taskMsgs[scene];
@@ -5863,7 +5908,7 @@ function resetT13(){
     // 탭 스타일 초기화 후 재렌더링
     ['elder','sleep','energy'].forEach(s=>{
         const btn=document.getElementById('t13-tab-'+s);
-        if(btn) btn.className='flex-1 py-2 text-sm font-black rounded-xl border-2 transition-all '+(s==='elder'?'border-slate-700 bg-slate-700 text-white':'border-slate-200 bg-white text-slate-500');
+        if(btn) btn.className='flex-1 py-2.5 text-[15px] font-black rounded-xl border-2 transition-all '+(s==='elder'?'border-slate-700 bg-slate-700 text-white':'border-slate-200 bg-white text-slate-500');
     });
     selectT13Scene('elder');
 }
@@ -5981,12 +6026,12 @@ function selectT14Scene(scene){
     const bannerDesc = document.querySelector('#screen-t14 .task-banner div');
     if(bannerDesc) {
         const taskMsgs = {
-            child: `<p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 영상 데이터 기반으로 위험 행동(달리기·넘어짐·이탈)을 자동 감지하고 보호자·관제실에 동시 알림하는 AI 기술 스택을 5단계로 설계하십시오.</strong></p>
+            child: `<p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 영상 데이터 기반으로 위험 행동(달리기·넘어짐·이탈)을 자동 감지하고 보호자·관제실에 동시 알림하는 AI 기술 스택을 5단계로 설계하십시오.</strong></p>
 <p class="text-[13px] text-slate-600 font-normal mt-1">※ 영상 데이터의 프라이버시 보호를 고려하여 처리 위치를 결정하십시오.</p>
 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 5단계 설계를 모두 완료한 후 [진단 실행]을 클릭하십시오.</p>`,
-            building: `<p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] 건물별 재실·전력·환경 데이터를 학습하여 공공건물 간 데이터를 공유하지 않고 모델만 공유하는 분산 학습 구조로 스마트그리드 DR 자동화 AI 기술 스택을 5단계로 설계하십시오.</strong></p>
+            building: `<p><strong class="font-bold text-slate-800 text-sm">[실습 과제] 건물별 재실·전력·환경 데이터를 학습하여 공공건물 간 데이터를 공유하지 않고 모델만 공유하는 분산 학습 구조로 스마트그리드 DR 자동화 AI 기술 스택을 5단계로 설계하십시오.</strong></p>
 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 5단계 설계를 모두 완료한 후 [진단 실행]을 클릭하십시오.</p>`,
-            hospital: `<p><strong class="font-bold text-slate-800 text-[14px]">[실습 과제] mmWave·웨어러블 생체 데이터로 낙상·이상 생체신호를 감지하고 의료진에게 신속히 전달하되, 환자 의료 데이터는 외부로 전송하지 않고 병원별 모델만 공유하는 AI 기술 스택을 5단계로 설계하십시오.</strong></p>
+            hospital: `<p><strong class="font-bold text-slate-800 text-sm">[실습 과제] mmWave·웨어러블 생체 데이터로 낙상·이상 생체신호를 감지하고 의료진에게 신속히 전달하되, 환자 의료 데이터는 외부로 전송하지 않고 병원별 모델만 공유하는 AI 기술 스택을 5단계로 설계하십시오.</strong></p>
 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 5단계 설계를 모두 완료한 후 [진단 실행]을 클릭하십시오.</p>`
         };
         if(taskMsgs[scene]) bannerDesc.innerHTML = taskMsgs[scene];
@@ -6044,7 +6089,7 @@ function resetT14(){
     t14Current='child';
     ['hospital','child','building'].forEach(s=>{
         const btn=document.getElementById('t14-tab-'+s);
-        if(btn) btn.className='flex-1 py-2 text-sm font-black rounded-xl border-2 transition-all '+(s==='child'?'border-slate-700 bg-slate-700 text-white':'border-slate-200 bg-white text-slate-500');
+        if(btn) btn.className='flex-1 py-2.5 text-[15px] font-black rounded-xl border-2 transition-all '+(s==='child'?'border-slate-700 bg-slate-700 text-white':'border-slate-200 bg-white text-slate-500');
     });
     selectT14Scene('child');
 }
@@ -6073,11 +6118,11 @@ const t15Devices=[
   {id:'sw',    name:'스마트 스위치',   group:'control', concept:'기존 벽 스위치를 교체해 조명·가전의 전원을 원격으로 제어하는 스위치',example:'거실·침실 조명 제어',comm:'Zigbee/Wi-Fi'},
   {id:'plug',  name:'스마트 플러그',   group:'control', concept:'콘센트에 연결된 가전의 전원을 제어하고 소비전력을 측정하는 장치',example:'가전제품 원격 제어·절전',comm:'Zigbee/Wi-Fi'},
   {id:'lock',  name:'스마트 도어락',   group:'control', concept:'비밀번호·앱·카드키로 출입을 제어하고 출입 기록을 관리하는 전자 잠금장치',example:'현관문',comm:'BLE/Wi-Fi/Zigbee'},
-  {id:'ir',    name:'적외선 허브',     group:'control', concept:'리모컨 신호를 대신 보내 구형 가전을 앱으로 제어하게 만드는 중계 장치',example:'에어컨·TV·선풍기 원격 제어',comm:'Wi-Fi'},
+  {id:'ir',    name:'스마트 IR 리모컨',     group:'control', concept:'리모컨 신호를 대신 보내 구형 가전을 앱으로 제어하게 만드는 중계 장치',example:'에어컨·TV·선풍기 원격 제어',comm:'Wi-Fi'},
   {id:'valve', name:'스마트 차단밸브', group:'control', concept:'가스·수도 공급을 원격 또는 센서 연동으로 차단하는 안전 장치',example:'가스 누출·누수 감지 연동',comm:'Zigbee'},
   {id:'btn',   name:'스마트 버튼',     group:'interface',concept:'누르는 동작으로 자동화 시나리오를 실행하는 물리적 입력 장치',example:'외출 모드·취침 모드 원터치',comm:'Zigbee'},
 ];
-    const t15Detail = {"hub": {"detail": [{"icon": "📘", "label": "개념", "text": "지능형홈 허브는 Zigbee·Thread처럼 저전력 무선 기기들을 하나로 묶어 인터넷망(Wi-Fi·유선)과 연결하는 중앙 장치입니다. 서로 다른 기기의 통신을 중계하고 로컬 자동화를 수행합니다."}, {"icon": "🔧", "label": "현장", "text": "무선 음영을 줄이도록 집 중앙·개방된 곳에 두며, 안정성을 위해 공유기와 유선 LAN으로 연결하는 것을 권장합니다."}, {"icon": "💡", "label": "알아두기", "text": "Zigbee·Thread 기기는 허브가 없으면 연동·자동화가 불가능합니다. 단, AI 스피커나 일부 TV에 허브 기능이 내장된 경우가 있어 중복 투자를 확인해야 합니다."}], "quiz": {"q": "Zigbee 방식의 센서와 스위치를 하나의 자동화 시스템으로 연결할 때 반드시 필요한 장치는?", "options": ["IP 카메라", "지능형홈 허브", "스마트 버튼", "적외선 허브"], "ans": 1, "explain": "Zigbee 기기는 공유기·스마트폰과 직접 통신할 수 없어, 신호를 중계하고 자동화를 처리할 허브가 반드시 필요합니다."}}, "mmwave": {"detail": [{"icon": "📘", "label": "개념", "text": "mmWave 재실센서는 밀리미터파(파장이 밀리미터 단위로 짧은 전파)를 쏘고, 자동차 후방감지센서처럼 사람·물체에 부딪혀 되돌아오는 신호를 읽어 위치와 움직임을 파악합니다. 호흡 같은 미세한 움직임까지 감지하므로 가만히 있어도 사람이 있다는 것을 판단하며, 움직임이 멈추면 감지하지 못하는 PIR의 한계를 보완하는 것이 핵심입니다."}, {"icon": "🔧", "label": "현장", "text": "침실·욕실·독거노인 공간처럼 오래 머무는 공간에 적합합니다. 천장이나 벽 상단에 설치하며, 감지 범위와 각도를 공간 형태에 맞춰 조정합니다."}, {"icon": "💡", "label": "알아두기", "text": "Zigbee로 허브와 연동됩니다. 미세한 움직임도 잡아내므로 커튼 흔들림·반려동물 등으로 오감지가 생길 수 있어, 설치 후 민감도 조정이 필요합니다."}], "quiz": {"q": "사람이 소파에 가만히 앉아 책을 볼 때도 조명이 꺼지지 않게 하려면 어떤 센서가 적합한가?", "options": ["PIR 센서", "mmWave 재실센서", "도어센서", "스마트 버튼"], "ans": 1, "explain": "PIR은 움직임이 없으면 감지하지 못해 조명이 꺼지지만, mmWave는 정지 상태의 사람도 감지해 재실을 유지합니다."}}, "pir": {"detail": [{"icon": "📘", "label": "개념", "text": "PIR(Passive Infrared, 수동형 적외선) 센서는 사람·동물의 체온에서 나오는 적외선 변화를 감지해 움직임을 판단합니다. 이름 그대로 센서가 적외선을 쏘는 것이 아니라, 외부의 열 변화를 수동적(Passive)으로 받아들이는 방식입니다."}, {"icon": "🔧", "label": "현장", "text": "현관·복도처럼 사람이 지나가는 공간의 조명 자동화에 씁니다. 열 변화로 작동하므로 난방기·에어컨 토출구·직사광선 창가는 오작동 위험이 커 피합니다."}, {"icon": "💡", "label": "알아두기", "text": "Zigbee로 연동됩니다. 사람이 가만히 있으면 감지하지 못해 재실 판단엔 mmWave가 적합합니다. 대신 소비전력이 적어 배터리로 오래 씁니다."}], "quiz": {"q": "PIR 센서의 오작동을 줄이기 위해 가장 피해야 할 설치 위치는?", "options": ["사람이 자주 지나는 복도 천장", "어두운 옷방", "난방기 온풍이 직접 닿는 벽면", "현관 입구"], "ans": 2, "explain": "PIR은 열 변화를 감지하므로, 급격한 온도 변화를 일으키는 난방기·에어컨 주변에 설치하면 오작동을 유발합니다."}}, "door": {"detail": [{"icon": "📘", "label": "개념", "text": "도어센서는 본체와 자석이 붙었다 떨어질 때의 자력 변화로 문·창문의 열림/닫힘을 감지합니다. 개폐되는 순간을 자동화의 시작 신호(트리거)로 만듭니다."}, {"icon": "🔧", "label": "현장", "text": "현관문·창문·냉장고 등에 문틀(본체)과 문짝(자석)으로 나눠 부착합니다. 철제 문은 자성 간섭으로 오작동할 수 있어 스페이서를 덧대거나 이격합니다."}, {"icon": "💡", "label": "알아두기", "text": "주로 Zigbee를 씁니다. 두 부품의 간격이 제품 기준(보통 10~15mm)을 벗어나면 닫혀 있어도 열림으로 인식하므로 정렬이 중요합니다."}], "quiz": {"q": "철제 방화문에 도어센서를 설치했더니 닫아도 계속 열림으로 뜬다. 가장 적절한 조치는?", "options": ["자석을 5cm 더 멀리 떨어뜨린다", "본체와 자석 사이에 철판을 덧댄다", "비전도성 스페이서를 깔아 철문과의 자성 간섭을 줄인다", "Wi-Fi형으로 교체한다"], "ans": 2, "explain": "철문은 자력을 왜곡해 오작동을 일으키므로, 플라스틱·고무 스페이서로 이격하면 해결됩니다."}}, "co2": {"detail": [{"icon": "📘", "label": "개념", "text": "CO₂ 센서는 실내 이산화탄소 농도를 ppm 단위로 측정해 공기질을 판단합니다. 사람이 많거나 환기가 부족하면 수치가 올라가, 환기 시점을 정량적으로 알려줍니다."}, {"icon": "🔧", "label": "현장", "text": "거실·침실·공부방처럼 오래 머무는 공간의 호흡선 높이(약 1.2~1.5m)에 설치해, 환기장치·주방 후드와 연동합니다."}, {"icon": "💡", "label": "알아두기", "text": "Zigbee로 연동됩니다. 보급형 추정(eCO₂) 방식보다, 실제 CO₂를 측정하는 NDIR 방식이 정확한 환기 제어에 유리합니다."}], "quiz": {"q": "밀폐된 공부방의 CO₂ 농도가 1,000 ppm을 넘었을 때 자동으로 연동·구동할 장치로 가장 적절한 것은?", "options": ["스마트 도어락", "환기장치(전열교환기)", "적외선 허브", "가습기"], "ans": 1, "explain": "CO₂ 농도가 높아지면 졸음·두통을 유발하므로, 외부 공기를 들이고 내부 공기를 내보내는 환기장치를 가동하는 것이 올바른 연동입니다."}}, "gas": {"detail": [{"icon": "📘", "label": "개념", "text": "가스감지기는 누출된 가스(LNG·LPG)를 감지해 경보를 울리고, 허브로 긴급 신호를 보내는 안전장치입니다."}, {"icon": "🔧", "label": "현장", "text": "가스의 종류에 따라 위치가 다릅니다. 공기보다 가벼운 LNG(도시가스)는 천장에서 30cm 이내, 무거운 LPG는 바닥에서 30cm 이내에 설치합니다."}, {"icon": "💡", "label": "알아두기", "text": "주로 Zigbee·상시전원을 씁니다. 누출 즉시 스마트 차단밸브를 자동으로 잠그도록 연동해 설계하면 안전 완성도가 높아집니다."}], "quiz": {"q": "공기보다 가벼운 LNG(도시가스)를 쓰는 주방에 가스감지기를 설치할 때 올바른 위치는?", "options": ["바닥에서 30cm 이내", "가스밸브 손잡이 옆", "천장에서 30cm 이내", "싱크대 하부장 안쪽"], "ans": 2, "explain": "LNG는 공기보다 가벼워 누출 시 위로 떠오르므로, 천장면 기준 30cm 이내에 설치해야 신속히 감지합니다."}}, "smoke": {"detail": [{"icon": "📘", "label": "개념", "text": "연기감지기는 화재 초기의 연기 입자가 빛을 산란시키는 현상(광전식)으로 화재를 감지합니다. 열 감지보다 빨라 대피 시간을 확보합니다."}, {"icon": "🔧", "label": "현장", "text": "침실·거실·복도 천장에 설치합니다. 주방 수증기·조리 연기로 오경보가 잦으므로, 화구·다습 구역에서 최소 1.5m 이격합니다."}, {"icon": "💡", "label": "알아두기", "text": "소방 표준 독립형에 Zigbee 모듈이 결합된 형태가 많습니다. 감지 시 알림과 함께 집안 조명을 켜 대피로를 확보하는 연동으로 확장합니다."}], "quiz": {"q": "연기감지기를 천장에 설치할 때 오경보를 예방하기 위한 주의사항으로 옳은 것은?", "options": ["조리 수증기·열기가 직접 닿는 위치는 피한다", "가스레인지 바로 위 천장에 설치한다", "벽 모서리에 바짝 붙인다", "에어컨 토출구 정면에 둔다"], "ans": 0, "explain": "광전식 연기감지기는 수증기·요리 연기도 화재로 오인할 수 있어, 화구·다습 구역에서 거리를 두고 설치해야 합니다."}}, "leak": {"detail": [{"icon": "📘", "label": "개념", "text": "누수감지기는 바닥의 두 전극에 물이 닿으면 전류가 흐르는 원리로 누수를 감지합니다. 적은 양의 침수라도 수막이 형성되면 즉시 인지합니다."}, {"icon": "🔧", "label": "현장", "text": "세탁기 배수구·싱크대 하부·보일러실처럼 물이 흘러내려 고이기 쉬운 가장 낮은 바닥면에 내려놓습니다."}, {"icon": "💡", "label": "알아두기", "text": "주로 Zigbee, 배터리로 수년간 작동합니다. 메인 배관의 스마트 차단밸브와 연동하면 부재중에도 수도를 자동 차단해 아래층 피해를 막습니다."}], "quiz": {"q": "싱크대 하부 정수기 라인의 누수를 가장 효과적으로 감지하려면 어디에 설치해야 하는가?", "options": ["싱크대 문짝 상단 안쪽", "물이 고이기 쉬운 하부장 바닥면", "주방 천장", "정수기 조작부 위"], "ans": 1, "explain": "누수감지기는 바닥 전극에 물이 직접 닿아야 작동하므로, 누수 시 물이 고이는 하부장 바닥면에 설치합니다."}}, "cam": {"detail": [{"icon": "📘", "label": "개념", "text": "IP 카메라는 영상을 디지털로 변환해 네트워크로 실시간 전송하는 감시 장치입니다. 별도 녹화기 없이 단독으로 네트워크에 연결돼 앱으로 원격 확인이 가능합니다."}, {"icon": "🔧", "label": "현장", "text": "현관·거실·외부 출입구에 설치합니다. 영상 데이터가 커 대역폭 소모가 크므로, 안정적인 Wi-Fi와 상시 전원(220V·PoE)을 확보해야 합니다."}, {"icon": "💡", "label": "알아두기", "text": "대부분 Wi-Fi 단독으로 공유기와 통신하며 허브를 거치지 않습니다. 원격·녹화 확인은 클라우드나 SD카드가 필요하고, 재실 시 렌즈를 가리는 사생활 보호 연동이 중요합니다."}], "quiz": {"q": "IP 카메라가 주로 쓰는 통신 방식과, 시공 시 확보해야 할 인프라는?", "options": ["Zigbee — 전용 허브", "BLE — 동전형 배터리", "Wi-Fi — 상시 전원과 무선 음영 해소", "Z-Wave — 세대 단자함"], "ans": 2, "explain": "IP 카메라는 고용량 영상을 실시간 전송하므로 대역폭이 넓은 Wi-Fi를 쓰며, 소비전력이 커서 상시 전원이 필요합니다."}}, "temp": {"detail": [{"icon": "📘", "label": "개념", "text": "온습도 센서는 실내 온도·습도를 측정해 수치로 제공합니다. 냉난방·제습·가습 자동화의 기준값(조건)을 끊임없이 공급합니다."}, {"icon": "🔧", "label": "현장", "text": "거실·침실 등 생활 높이(약 1.2~1.5m) 벽면에 설치합니다. 에어컨 바람·직사광선·전열기 옆은 왜곡된 값이 나오므로 피합니다."}, {"icon": "💡", "label": "알아두기", "text": "초저전력 Zigbee로 배터리가 1년 이상 갑니다. 단독 제어 기능은 없고, 측정값으로 에어컨(IR 허브)·보일러·제습 플러그를 움직이는 기준점 역할을 합니다."}], "quiz": {"q": "냉난방 자동화의 신뢰도를 높이려면 온습도 센서를 어디에 설치해야 하는가?", "options": ["에어컨 바람이 정면으로 닿는 곳", "직사광선이 강한 창가", "직사광선·온열기 영향이 없는 생활 높이 벽면", "가스레인지 뒤 벽"], "ans": 2, "explain": "센서가 냉난방·직사광선에 직접 노출되면 왜곡된 값을 읽어 자동화가 오작동하므로, 외란이 없는 중립 위치에 설치합니다."}}, "sw": {"detail": [{"icon": "📘", "label": "개념", "text": "스마트 스위치는 기존 벽 스위치를 교체해, 터치는 물론 앱·자동화로 조명 전원을 원격 ON/OFF하는 제어 장치입니다. 내부에 릴레이와 통신 모듈이 들어 있습니다."}, {"icon": "🔧", "label": "현장", "text": "기존 스위치 박스에 설치합니다. 중성선(N)이 박스까지 와 있는지에 따라 N 필수형과 No-Neutral형을 구분해 시공해야 결선 오류와 잔광 하자를 막습니다."}, {"icon": "💡", "label": "알아두기", "text": "Zigbee·Wi-Fi를 씁니다. No-Neutral형은 미세 전류가 흘러 LED 잔광이 생길 수 있어, 전등단에 잔광 방지 콘덴서를 시공합니다. Zigbee형은 신호를 중계하는 리피터 역할도 합니다."}], "quiz": {"q": "스마트 스위치 교체 후 전등을 꺼도 LED가 희미하게 깜빡이는 잔광이 생겼다. 올바른 조치는?", "options": ["통신을 Wi-Fi로 교체", "물리 버튼을 강하게 결착", "No-Neutral 배선을 확인하고 전등단에 잔광 방지 콘덴서 시공", "허브를 스위치 옆으로 이동"], "ans": 2, "explain": "중성선이 없는 방식은 미세 전류가 전등을 거쳐 흘러 잔광이 생기므로, 전등단에 잔광 방지 콘덴서를 시공해 해결합니다."}}, "plug": {"detail": [{"icon": "📘", "label": "개념", "text": "스마트 플러그는 콘센트와 가전 사이에 꽂아, 내부 릴레이로 전원을 원격 제어하는 장치입니다. 실시간 소비전력(W)·누적 전력량(kWh)도 측정합니다."}, {"icon": "🔧", "label": "현장", "text": "대기전력이 큰 가전이나 자동화가 필요한 구형 가전에 씁니다. 정격 허용 용량(예: 16A)을 초과하는 고출력 가전(에어컨·전열기)을 꽂으면 과열·화재 위험이 있습니다."}, {"icon": "💡", "label": "알아두기", "text": "Zigbee·Wi-Fi를 씁니다. 소비전력이 일정값 이하로 떨어지면 대기전력으로 보고 자동 차단하는 절전 시나리오에 유용합니다."}], "quiz": {"q": "스마트 플러그로 설계할 때 과부하·화재를 막기 위해 반드시 확인할 사양은?", "options": ["LED 표시등 색상", "최대 허용 정격 전류 용량(A)", "외관 재질", "페어링 버튼 크기"], "ans": 1, "explain": "플러그 내부 릴레이는 한계 용량이 정해져 있어, 이를 초과하는 고전력 가전을 연결하면 과열·화재 위험이 있습니다."}}, "lock": {"detail": [{"icon": "📘", "label": "개념", "text": "스마트 도어락은 비밀번호·카드키·앱으로 출입을 제어하는 전자 잠금장치입니다. 스마트폰 위치를 인식해 자동 해제하거나 원격으로 문을 열 수 있습니다."}, {"icon": "🔧", "label": "현장", "text": "현관 방화문의 모티스 규격에 맞춰 시공합니다. 문틀·문짝 유격으로 데드볼트가 걸리면 배터리가 급소모되거나 잠금 불량이 나므로, 걸쇠 정렬이 핵심입니다."}, {"icon": "💡", "label": "알아두기", "text": "자체는 BLE·전용 주파수를 쓰는 경우가 많아, 원격 제어·알림은 Wi-Fi나 전용 브릿지로 허브와 연동합니다. 출입 기록 수집이 돌봄·보안의 핵심 링크가 됩니다."}], "quiz": {"q": "도어락 시공 후 문을 닫을 때마다 걸림·경고음이 나고 건전지가 일주일 만에 방전됐다. 먼저 점검할 원인은?", "options": ["비밀번호 입력 데이터 오류", "문틀 걸쇠와 데드볼트의 위치 불일치·걸림", "Wi-Fi 신호 부족", "터치패드 스크래치"], "ans": 1, "explain": "데드볼트가 문틀 홈에 부드럽게 들어가지 못하고 끼이면 모터에 과부하가 걸려, 구동 불량과 급방전이 발생합니다."}}, "ir": {"detail": [{"icon": "📘", "label": "개념", "text": "적외선(IR) 허브는 스마트 기능이 없는 구형 가전(에어컨·TV 등)에 리모컨 신호(적외선)를 대신 쏴, 앱·자동화로 제어하게 만드는 중계 장치입니다."}, {"icon": "🔧", "label": "현장", "text": "제어할 가전이 보이는 거실 벽·천장에 둡니다. 적외선은 빛이라 장애물을 통과하지 못하므로, 허브와 가전 사이에 가림이 없도록(가시선 확보) 배치합니다."}, {"icon": "💡", "label": "알아두기", "text": "주로 Wi-Fi를 씁니다. 단방향 통신이라 가전이 실제 켜졌는지 피드백을 받지 못하므로, 스마트 플러그·온습도 센서를 조합해 구동 여부를 간접 확인하도록 설계합니다."}], "quiz": {"q": "IR 허브로 구형 에어컨을 원격 제어할 때 배치에서 가장 주의할 점은?", "options": ["사이에 콘크리트 벽이 있어도 무방", "허브와 가전 사이에 신호를 가로막는 장애물이 없어야 함", "에어컨 소비전력 초과 여부", "에어컨 배선을 절단·결선"], "ans": 1, "explain": "적외선은 직진하는 빛의 성질이라 장애물을 뚫지 못하므로, 허브와 가전 사이에 가림이 없도록 배치해야 합니다."}}, "valve": {"detail": [{"icon": "📘", "label": "개념", "text": "스마트 차단밸브는 가스·수도 배관의 밸브에 모터 구동부를 결합해, 원격·센서 연동으로 공급을 잠그고 여는 안전 장치입니다."}, {"icon": "🔧", "label": "현장", "text": "가스 중간밸브나 수도 메인 밸브에 설치합니다. 기존 밸브 규격과 구동축이 정확히 맞아야 하며, 축이 틀어지면 토크 부족으로 완전히 잠기지 않는 불량이 납니다."}, {"icon": "💡", "label": "알아두기", "text": "배터리·상시전원형이 있고 주로 Zigbee를 씁니다. 단독보다 가스감지기·누수감지기와 연동해 자동 차단의 최종 수행자 역할로 묶어 설계합니다."}], "quiz": {"q": "가스 누출 사고 예방을 위한 자동화 시나리오로 가장 올바른 조합은?", "options": ["PIR 감지 → 도어락 개방", "가스감지기 누출 인지 → 차단밸브 자동 폐쇄", "CO₂ 상승 → 플러그 차단", "연기감지 → 에어컨 가동"], "ans": 1, "explain": "가스 누출은 가스감지기가 먼저 포착하고, 즉시 배관을 잠그는 차단밸브와 연동해 차단하는 것이 올바른 안전 시나리오입니다."}}, "btn": {"detail": [{"icon": "📘", "label": "개념", "text": "스마트 버튼은 누르는 동작을 자동화 명령으로 전달하는 무선 입력 장치입니다. 앱 조작이 어려운 노약자·어린이도 한 번의 클릭으로 시나리오를 실행하게 합니다."}, {"icon": "🔧", "label": "현장", "text": "침대 머리맡·현관 벽·소파 옆처럼 손이 자주 가는 동선에 부착하거나 둡니다."}, {"icon": "💡", "label": "알아두기", "text": "저전력 Zigbee로 배터리가 오래갑니다. 한 번/두 번/길게 누름을 구분해, 버튼 하나에 외출 모드·일괄 소등 등 여러 시나리오를 매핑할 수 있습니다."}], "quiz": {"q": "현관에서 나가기 전 한 번의 조작으로 일괄 소등·가스 차단을 실행하려 할 때 가장 적합한 기기는?", "options": ["IP 카메라", "스마트 버튼", "온습도 센서", "PIR 센서"], "ans": 1, "explain": "스마트 버튼은 물리적 클릭에 여러 장치의 연동 시나리오를 묶어 한 번에 실행하는 직관적 입력 장치입니다."}}};
+    const t15Detail = {"hub": {"detail": [{"icon": "📘", "label": "개념", "text": "지능형홈 허브는 Zigbee·Thread처럼 저전력 무선 기기들을 하나로 묶어 인터넷망(Wi-Fi·유선)과 연결하는 중앙 장치입니다. 서로 다른 기기의 통신을 중계하고 로컬 자동화를 수행합니다."}, {"icon": "🔧", "label": "현장", "text": "무선 음영을 줄이도록 집 중앙·개방된 곳에 두며, 안정성을 위해 공유기와 유선 LAN으로 연결하는 것을 권장합니다."}, {"icon": "💡", "label": "알아두기", "text": "Zigbee·Thread 기기는 허브가 없으면 연동·자동화가 불가능합니다. 단, AI 스피커나 일부 TV에 허브 기능이 내장된 경우가 있어 중복 투자를 확인해야 합니다."}], "quiz": {"q": "Zigbee 방식의 센서와 스위치를 하나의 자동화 시스템으로 연결할 때 반드시 필요한 장치는?", "options": ["IP 카메라", "지능형홈 허브", "스마트 버튼", "스마트 IR 리모컨"], "ans": 1, "explain": "Zigbee 기기는 공유기·스마트폰과 직접 통신할 수 없어, 신호를 중계하고 자동화를 처리할 허브가 반드시 필요합니다."}}, "mmwave": {"detail": [{"icon": "📘", "label": "개념", "text": "mmWave 재실센서는 밀리미터파(파장이 밀리미터 단위로 짧은 전파)를 쏘고, 자동차 후방감지센서처럼 사람·물체에 부딪혀 되돌아오는 신호를 읽어 위치와 움직임을 파악합니다. 호흡 같은 미세한 움직임까지 감지하므로 가만히 있어도 사람이 있다는 것을 판단하며, 움직임이 멈추면 감지하지 못하는 PIR의 한계를 보완하는 것이 핵심입니다."}, {"icon": "🔧", "label": "현장", "text": "침실·욕실·독거노인 공간처럼 오래 머무는 공간에 적합합니다. 천장이나 벽 상단에 설치하며, 감지 범위와 각도를 공간 형태에 맞춰 조정합니다."}, {"icon": "💡", "label": "알아두기", "text": "Zigbee로 허브와 연동됩니다. 미세한 움직임도 잡아내므로 커튼 흔들림·반려동물 등으로 오감지가 생길 수 있어, 설치 후 민감도 조정이 필요합니다."}], "quiz": {"q": "사람이 소파에 가만히 앉아 책을 볼 때도 조명이 꺼지지 않게 하려면 어떤 센서가 적합한가?", "options": ["PIR 센서", "mmWave 재실센서", "도어센서", "스마트 버튼"], "ans": 1, "explain": "PIR은 움직임이 없으면 감지하지 못해 조명이 꺼지지만, mmWave는 정지 상태의 사람도 감지해 재실을 유지합니다."}}, "pir": {"detail": [{"icon": "📘", "label": "개념", "text": "PIR(Passive Infrared, 수동형 적외선) 센서는 사람·동물의 체온에서 나오는 적외선 변화를 감지해 움직임을 판단합니다. 이름 그대로 센서가 적외선을 쏘는 것이 아니라, 외부의 열 변화를 수동적(Passive)으로 받아들이는 방식입니다."}, {"icon": "🔧", "label": "현장", "text": "현관·복도처럼 사람이 지나가는 공간의 조명 자동화에 씁니다. 열 변화로 작동하므로 난방기·에어컨 토출구·직사광선 창가는 오작동 위험이 커 피합니다."}, {"icon": "💡", "label": "알아두기", "text": "Zigbee로 연동됩니다. 사람이 가만히 있으면 감지하지 못해 재실 판단엔 mmWave가 적합합니다. 대신 소비전력이 적어 배터리로 오래 씁니다."}], "quiz": {"q": "PIR 센서의 오작동을 줄이기 위해 가장 피해야 할 설치 위치는?", "options": ["사람이 자주 지나는 복도 천장", "어두운 옷방", "난방기 온풍이 직접 닿는 벽면", "현관 입구"], "ans": 2, "explain": "PIR은 열 변화를 감지하므로, 급격한 온도 변화를 일으키는 난방기·에어컨 주변에 설치하면 오작동을 유발합니다."}}, "door": {"detail": [{"icon": "📘", "label": "개념", "text": "도어센서는 본체와 자석이 붙었다 떨어질 때의 자력 변화로 문·창문의 열림/닫힘을 감지합니다. 개폐되는 순간을 자동화의 시작 신호(트리거)로 만듭니다."}, {"icon": "🔧", "label": "현장", "text": "현관문·창문·냉장고 등에 문틀(본체)과 문짝(자석)으로 나눠 부착합니다. 철제 문은 자성 간섭으로 오작동할 수 있어 스페이서를 덧대거나 이격합니다."}, {"icon": "💡", "label": "알아두기", "text": "주로 Zigbee를 씁니다. 두 부품의 간격이 제품 기준(보통 10~15mm)을 벗어나면 닫혀 있어도 열림으로 인식하므로 정렬이 중요합니다."}], "quiz": {"q": "철제 방화문에 도어센서를 설치했더니 닫아도 계속 열림으로 뜬다. 가장 적절한 조치는?", "options": ["자석을 5cm 더 멀리 떨어뜨린다", "본체와 자석 사이에 철판을 덧댄다", "비전도성 스페이서를 깔아 철문과의 자성 간섭을 줄인다", "Wi-Fi형으로 교체한다"], "ans": 2, "explain": "철문은 자력을 왜곡해 오작동을 일으키므로, 플라스틱·고무 스페이서로 이격하면 해결됩니다."}}, "co2": {"detail": [{"icon": "📘", "label": "개념", "text": "CO₂ 센서는 실내 이산화탄소 농도를 ppm 단위로 측정해 공기질을 판단합니다. 사람이 많거나 환기가 부족하면 수치가 올라가, 환기 시점을 정량적으로 알려줍니다."}, {"icon": "🔧", "label": "현장", "text": "거실·침실·공부방처럼 오래 머무는 공간의 호흡선 높이(약 1.2~1.5m)에 설치해, 환기장치·주방 후드와 연동합니다."}, {"icon": "💡", "label": "알아두기", "text": "Zigbee로 연동됩니다. 보급형 추정(eCO₂) 방식보다, 실제 CO₂를 측정하는 NDIR 방식이 정확한 환기 제어에 유리합니다."}], "quiz": {"q": "밀폐된 공부방의 CO₂ 농도가 1,000 ppm을 넘었을 때 자동으로 연동·구동할 장치로 가장 적절한 것은?", "options": ["스마트 도어락", "환기장치(전열교환기)", "스마트 IR 리모컨", "가습기"], "ans": 1, "explain": "CO₂ 농도가 높아지면 졸음·두통을 유발하므로, 외부 공기를 들이고 내부 공기를 내보내는 환기장치를 가동하는 것이 올바른 연동입니다(고용노동부고시 「사무실 공기관리 지침」 관리기준 1,000ppm 이하 참고)."}}, "gas": {"detail": [{"icon": "📘", "label": "개념", "text": "가스감지기는 누출된 가스(LNG·LPG)를 감지해 경보를 울리고, 허브로 긴급 신호를 보내는 안전장치입니다."}, {"icon": "🔧", "label": "현장", "text": "가스의 종류에 따라 위치가 다릅니다. 공기보다 가벼운 LNG(도시가스)는 천장에서 30cm 이내, 무거운 LPG는 바닥에서 30cm 이내에 설치합니다(「가스누설경보기의 화재안전성능기준」 NFPC 206)."}, {"icon": "💡", "label": "알아두기", "text": "주로 Zigbee·상시전원을 씁니다. 누출 즉시 스마트 차단밸브를 자동으로 잠그도록 연동해 설계하면 안전 완성도가 높아집니다."}], "quiz": {"q": "공기보다 가벼운 LNG(도시가스)를 쓰는 주방에 가스감지기를 설치할 때 올바른 위치는?", "options": ["바닥에서 30cm 이내", "가스밸브 손잡이 옆", "천장에서 30cm 이내", "싱크대 하부장 안쪽"], "ans": 2, "explain": "LNG는 공기보다 가벼워 누출 시 위로 떠오르므로, 천장면 기준 30cm 이내에 설치해야 신속히 감지합니다."}}, "smoke": {"detail": [{"icon": "📘", "label": "개념", "text": "연기감지기는 화재 초기의 연기 입자가 빛을 산란시키는 현상(광전식)으로 화재를 감지합니다. 열 감지보다 빨라 대피 시간을 확보합니다."}, {"icon": "🔧", "label": "현장", "text": "침실·거실·복도 천장에 설치합니다. 주방 수증기·조리 연기로 오경보가 잦으므로, 화구·다습 구역에서 최소 1.5m 이격합니다."}, {"icon": "💡", "label": "알아두기", "text": "소방 표준 독립형에 Zigbee 모듈이 결합된 형태가 많습니다. 감지 시 알림과 함께 집안 조명을 켜 대피로를 확보하는 연동으로 확장합니다."}], "quiz": {"q": "연기감지기를 천장에 설치할 때 오경보를 예방하기 위한 주의사항으로 옳은 것은?", "options": ["조리 수증기·열기가 직접 닿는 위치는 피한다", "가스레인지 바로 위 천장에 설치한다", "벽 모서리에 바짝 붙인다", "에어컨 토출구 정면에 둔다"], "ans": 0, "explain": "광전식 연기감지기는 수증기·요리 연기도 화재로 오인할 수 있어, 화구·다습 구역에서 거리를 두고 설치해야 합니다."}}, "leak": {"detail": [{"icon": "📘", "label": "개념", "text": "누수감지기는 바닥의 두 전극에 물이 닿으면 전류가 흐르는 원리로 누수를 감지합니다. 적은 양의 침수라도 수막이 형성되면 즉시 인지합니다."}, {"icon": "🔧", "label": "현장", "text": "세탁기 배수구·싱크대 하부·보일러실처럼 물이 흘러내려 고이기 쉬운 가장 낮은 바닥면에 내려놓습니다."}, {"icon": "💡", "label": "알아두기", "text": "주로 Zigbee, 배터리로 수년간 작동합니다. 메인 배관의 스마트 차단밸브와 연동하면 부재중에도 수도를 자동 차단해 아래층 피해를 막습니다."}], "quiz": {"q": "싱크대 하부 정수기 라인의 누수를 가장 효과적으로 감지하려면 어디에 설치해야 하는가?", "options": ["싱크대 문짝 상단 안쪽", "물이 고이기 쉬운 하부장 바닥면", "주방 천장", "정수기 조작부 위"], "ans": 1, "explain": "누수감지기는 바닥 전극에 물이 직접 닿아야 작동하므로, 누수 시 물이 고이는 하부장 바닥면에 설치합니다."}}, "cam": {"detail": [{"icon": "📘", "label": "개념", "text": "IP 카메라는 영상을 디지털로 변환해 네트워크로 실시간 전송하는 감시 장치입니다. 별도 녹화기 없이 단독으로 네트워크에 연결돼 앱으로 원격 확인이 가능합니다."}, {"icon": "🔧", "label": "현장", "text": "현관·거실·외부 출입구에 설치합니다. 영상 데이터가 커 대역폭 소모가 크므로, 안정적인 Wi-Fi와 상시 전원(220V·PoE)을 확보해야 합니다."}, {"icon": "💡", "label": "알아두기", "text": "대부분 Wi-Fi 단독으로 공유기와 통신하며 허브를 거치지 않습니다. 원격·녹화 확인은 클라우드나 SD카드가 필요하고, 재실 시 렌즈를 가리는 사생활 보호 연동이 중요합니다."}], "quiz": {"q": "IP 카메라가 주로 쓰는 통신 방식과, 시공 시 확보해야 할 인프라는?", "options": ["Zigbee — 전용 허브", "BLE — 동전형 배터리", "Wi-Fi — 상시 전원과 무선 음영 해소", "Z-Wave — 세대 단자함"], "ans": 2, "explain": "IP 카메라는 고용량 영상을 실시간 전송하므로 대역폭이 넓은 Wi-Fi를 쓰며, 소비전력이 커서 상시 전원이 필요합니다."}}, "temp": {"detail": [{"icon": "📘", "label": "개념", "text": "온습도 센서는 실내 온도·습도를 측정해 수치로 제공합니다. 냉난방·제습·가습 자동화의 기준값(조건)을 끊임없이 공급합니다."}, {"icon": "🔧", "label": "현장", "text": "거실·침실 등 생활 높이(약 1.2~1.5m) 벽면에 설치합니다. 에어컨 바람·직사광선·전열기 옆은 왜곡된 값이 나오므로 피합니다."}, {"icon": "💡", "label": "알아두기", "text": "초저전력 Zigbee로 배터리가 1년 이상 갑니다. 단독 제어 기능은 없고, 측정값으로 에어컨(스마트 IR 리모컨)·보일러·제습 플러그를 움직이는 기준점 역할을 합니다."}], "quiz": {"q": "냉난방 자동화의 신뢰도를 높이려면 온습도 센서를 어디에 설치해야 하는가?", "options": ["에어컨 바람이 정면으로 닿는 곳", "직사광선이 강한 창가", "직사광선·온열기 영향이 없는 생활 높이 벽면", "가스레인지 뒤 벽"], "ans": 2, "explain": "센서가 냉난방·직사광선에 직접 노출되면 왜곡된 값을 읽어 자동화가 오작동하므로, 외란이 없는 중립 위치에 설치합니다."}}, "sw": {"detail": [{"icon": "📘", "label": "개념", "text": "스마트 스위치는 기존 벽 스위치를 교체해, 터치는 물론 앱·자동화로 조명 전원을 원격 ON/OFF하는 제어 장치입니다. 내부에 릴레이와 통신 모듈이 들어 있습니다."}, {"icon": "🔧", "label": "현장", "text": "기존 스위치 박스에 설치합니다. 중성선(N)이 박스까지 와 있는지에 따라 N 필수형과 No-Neutral형을 구분해 시공해야 결선 오류와 잔광 하자를 막습니다."}, {"icon": "💡", "label": "알아두기", "text": "Zigbee·Wi-Fi를 씁니다. No-Neutral형은 미세 전류가 흘러 LED 잔광이 생길 수 있어, 전등단에 잔광 방지 콘덴서를 시공합니다. Zigbee형은 신호를 중계하는 리피터 역할도 합니다."}], "quiz": {"q": "스마트 스위치 교체 후 전등을 꺼도 LED가 희미하게 깜빡이는 잔광이 생겼다. 올바른 조치는?", "options": ["통신을 Wi-Fi로 교체", "물리 버튼을 강하게 결착", "No-Neutral 배선을 확인하고 전등단에 잔광 방지 콘덴서 시공", "허브를 스위치 옆으로 이동"], "ans": 2, "explain": "중성선이 없는 방식은 미세 전류가 전등을 거쳐 흘러 잔광이 생기므로, 전등단에 잔광 방지 콘덴서를 시공해 해결합니다."}}, "plug": {"detail": [{"icon": "📘", "label": "개념", "text": "스마트 플러그는 콘센트와 가전 사이에 꽂아, 내부 릴레이로 전원을 원격 제어하는 장치입니다. 실시간 소비전력(W)·누적 전력량(kWh)도 측정합니다."}, {"icon": "🔧", "label": "현장", "text": "대기전력이 큰 가전이나 자동화가 필요한 구형 가전에 씁니다. 정격 허용 용량(예: 16A)을 초과하는 고출력 가전(에어컨·전열기)을 꽂으면 과열·화재 위험이 있습니다."}, {"icon": "💡", "label": "알아두기", "text": "Zigbee·Wi-Fi를 씁니다. 소비전력이 일정값 이하로 떨어지면 대기전력으로 보고 자동 차단하는 절전 시나리오에 유용합니다."}], "quiz": {"q": "스마트 플러그로 설계할 때 과부하·화재를 막기 위해 반드시 확인할 사양은?", "options": ["LED 표시등 색상", "최대 허용 정격 전류 용량(A)", "외관 재질", "페어링 버튼 크기"], "ans": 1, "explain": "플러그 내부 릴레이는 한계 용량이 정해져 있어, 이를 초과하는 고전력 가전을 연결하면 과열·화재 위험이 있습니다."}}, "lock": {"detail": [{"icon": "📘", "label": "개념", "text": "스마트 도어락은 비밀번호·카드키·앱으로 출입을 제어하는 전자 잠금장치입니다. 스마트폰 위치를 인식해 자동 해제하거나 원격으로 문을 열 수 있습니다."}, {"icon": "🔧", "label": "현장", "text": "현관 방화문의 모티스 규격에 맞춰 시공합니다. 문틀·문짝 유격으로 데드볼트가 걸리면 배터리가 급소모되거나 잠금 불량이 나므로, 걸쇠 정렬이 핵심입니다."}, {"icon": "💡", "label": "알아두기", "text": "자체는 BLE·전용 주파수를 쓰는 경우가 많아, 원격 제어·알림은 Wi-Fi나 전용 브릿지로 허브와 연동합니다. 출입 기록 수집이 돌봄·보안의 핵심 링크가 됩니다."}], "quiz": {"q": "도어락 시공 후 문을 닫을 때마다 걸림·경고음이 나고 건전지가 일주일 만에 방전됐다. 먼저 점검할 원인은?", "options": ["비밀번호 입력 데이터 오류", "문틀 걸쇠와 데드볼트의 위치 불일치·걸림", "Wi-Fi 신호 부족", "터치패드 스크래치"], "ans": 1, "explain": "데드볼트가 문틀 홈에 부드럽게 들어가지 못하고 끼이면 모터에 과부하가 걸려, 구동 불량과 급방전이 발생합니다."}}, "ir": {"detail": [{"icon": "📘", "label": "개념", "text": "스마트 IR 리모컨은 스마트 기능이 없는 구형 가전(에어컨·TV 등)에 리모컨 신호(적외선)를 대신 쏴, 앱·자동화로 제어하게 만드는 중계 장치입니다."}, {"icon": "🔧", "label": "현장", "text": "제어할 가전이 보이는 거실 벽·천장에 둡니다. 적외선은 빛이라 장애물을 통과하지 못하므로, 허브와 가전 사이에 가림이 없도록(가시선 확보) 배치합니다."}, {"icon": "💡", "label": "알아두기", "text": "주로 Wi-Fi를 씁니다. 단방향 통신이라 가전이 실제 켜졌는지 피드백을 받지 못하므로, 스마트 플러그·온습도 센서를 조합해 구동 여부를 간접 확인하도록 설계합니다."}], "quiz": {"q": "스마트 IR 리모컨으로 구형 에어컨을 원격 제어할 때 배치에서 가장 주의할 점은?", "options": ["사이에 콘크리트 벽이 있어도 무방", "허브와 가전 사이에 신호를 가로막는 장애물이 없어야 함", "에어컨 소비전력 초과 여부", "에어컨 배선을 절단·결선"], "ans": 1, "explain": "적외선은 직진하는 빛의 성질이라 장애물을 뚫지 못하므로, 허브와 가전 사이에 가림이 없도록 배치해야 합니다."}}, "valve": {"detail": [{"icon": "📘", "label": "개념", "text": "스마트 차단밸브는 가스·수도 배관의 밸브에 모터 구동부를 결합해, 원격·센서 연동으로 공급을 잠그고 여는 안전 장치입니다."}, {"icon": "🔧", "label": "현장", "text": "가스 중간밸브나 수도 메인 밸브에 설치합니다. 기존 밸브 규격과 구동축이 정확히 맞아야 하며, 축이 틀어지면 토크 부족으로 완전히 잠기지 않는 불량이 납니다."}, {"icon": "💡", "label": "알아두기", "text": "배터리·상시전원형이 있고 주로 Zigbee를 씁니다. 단독보다 가스감지기·누수감지기와 연동해 자동 차단의 최종 수행자 역할로 묶어 설계합니다."}], "quiz": {"q": "가스 누출 사고 예방을 위한 자동화 시나리오로 가장 올바른 조합은?", "options": ["PIR 감지 → 도어락 개방", "가스감지기 누출 인지 → 차단밸브 자동 폐쇄", "CO₂ 상승 → 플러그 차단", "연기감지 → 에어컨 가동"], "ans": 1, "explain": "가스 누출은 가스감지기가 먼저 포착하고, 즉시 배관을 잠그는 차단밸브와 연동해 차단하는 것이 올바른 안전 시나리오입니다."}}, "btn": {"detail": [{"icon": "📘", "label": "개념", "text": "스마트 버튼은 누르는 동작을 자동화 명령으로 전달하는 무선 입력 장치입니다. 앱 조작이 어려운 노약자·어린이도 한 번의 클릭으로 시나리오를 실행하게 합니다."}, {"icon": "🔧", "label": "현장", "text": "침대 머리맡·현관 벽·소파 옆처럼 손이 자주 가는 동선에 부착하거나 둡니다."}, {"icon": "💡", "label": "알아두기", "text": "저전력 Zigbee로 배터리가 오래갑니다. 한 번/두 번/길게 누름을 구분해, 버튼 하나에 외출 모드·일괄 소등 등 여러 시나리오를 매핑할 수 있습니다."}], "quiz": {"q": "현관에서 나가기 전 한 번의 조작으로 일괄 소등·가스 차단을 실행하려 할 때 가장 적합한 기기는?", "options": ["IP 카메라", "스마트 버튼", "온습도 센서", "PIR 센서"], "ans": 1, "explain": "스마트 버튼은 물리적 클릭에 여러 장치의 연동 시나리오를 묶어 한 번에 실행하는 직관적 입력 장치입니다."}}};
 const t15GroupColor={infra:'bg-slate-100 text-slate-700 border-slate-300',sensor:'bg-blue-100 text-blue-700 border-blue-300',control:'bg-rose-100 text-rose-700 border-rose-300',interface:'bg-emerald-100 text-emerald-700 border-emerald-300'};
 const t15GroupLabel={infra:'인프라',sensor:'감지',control:'제어',interface:'인터페이스'};
 const t15Quizzes=[
@@ -6089,7 +6134,7 @@ const t15Quizzes=[
    explain:'mmWave — 존재 여부를 계속 확인하는 센서. PIR은 움직임이 없으면 감지 종료.'},
   {q:'거실에 있는 구형 에어컨을 스마트폰 앱으로 켜거나 온도를 조절하고 싶습니다. 필요한 기기는?',
    ans:'ir',options:['hub','ir','sw','btn'],
-   explain:'적외선 허브 — 기존(구형) 가전의 리모컨 신호를 앱으로 대체. 지능형홈 허브와 다름.'},
+   explain:'스마트 IR 리모컨 — 기존(구형) 가전의 리모컨 신호를 앱으로 대체. 지능형홈 허브와 다름.'},
   {q:'외출할 때 버튼 하나로 모든 조명을 끄고 로봇청소기를 작동시키려 합니다. 이 명령을 내리는 기기는?',
    ans:'btn',options:['door','sw','lock','btn'],
    explain:'스마트 버튼 — 사람이 시스템에 명령을 내리는 인터페이스. 스마트 스위치는 조명 하나만 제어.'},
@@ -6100,7 +6145,7 @@ const t15Quizzes=[
    ans:'dust',options:['co2','temp','dust','smoke'],
    explain:'미세먼지 센서 — PM2.5·PM10 농도 측정. 공기청정기·환기 자동화 연계. CO₂는 이산화탄소, 연기감지기는 화재 전용.'},
 ];
-const quizDevNames={dust:'미세먼지 센서',co2:'CO₂ 센서',temp:'온습도 센서',smoke:'연기감지기',gas:'가스감지기',leak:'누수감지기',pir:'PIR 센서',mmwave:'mmWave 재실센서',door:'도어센서',ir:'적외선 허브',hub:'지능형홈 허브',sw:'스마트 스위치',plug:'스마트 플러그',lock:'스마트 도어락',btn:'스마트 버튼',valve:'스마트 차단밸브',cam:'IP 카메라'};
+const quizDevNames={dust:'미세먼지 센서',co2:'CO₂ 센서',temp:'온습도 센서',smoke:'연기감지기',gas:'가스감지기',leak:'누수감지기',pir:'PIR 센서',mmwave:'mmWave 재실센서',door:'도어센서',ir:'스마트 IR 리모컨',hub:'지능형홈 허브',sw:'스마트 스위치',plug:'스마트 플러그',lock:'스마트 도어락',btn:'스마트 버튼',valve:'스마트 차단밸브',cam:'IP 카메라'};
 
 let t15CurrentStep=1;
 let t15ClassifyDone=false;
@@ -6125,11 +6170,11 @@ function t15GoStep(n){
           <li class="text-slate-500 font-normal">정답·해설은 제공되지 않습니다. 충분히 학습한 후 2단계로 이동하세요.</li>`,
       2: `<li><strong>🔌 인프라:</strong> 지능형홈 허브 (모든 기기 연결의 중심)</li>
           <li><strong>👁️ 감지:</strong> mmWave / PIR / 도어센서 / CO₂ / 가스 / 연기 / 누수 / IP카메라 / 온습도</li>
-          <li><strong>⚙️ 제어:</strong> 스마트 스위치 / 플러그 / 도어락 / 적외선 허브 / 스마트 차단밸브</li>
+          <li><strong>⚙️ 제어:</strong> 스마트 스위치 / 플러그 / 도어락 / 스마트 IR 리모컨 / 스마트 차단밸브</li>
           <li><strong>🎮 인터페이스:</strong> 스마트 버튼</li>`,
       3: `<li><strong>Q1.</strong> 스마트 차단밸브 — 가스·수도 공급을 물리적으로 차단하는 제어 기기</li>
           <li><strong>Q2.</strong> mmWave — 존재 여부를 계속 확인하는 센서 (상태형)</li>
-          <li><strong>Q3.</strong> 적외선 허브 — 구형 가전의 리모컨 신호를 앱으로 대체</li>
+          <li><strong>Q3.</strong> 스마트 IR 리모컨 — 구형 가전의 리모컨 신호를 앱으로 대체</li>
           <li><strong>Q4.</strong> 스마트 버튼 — 사람이 시스템에 명령을 내리는 인터페이스</li>
           <li><strong>Q5.</strong> 누수감지기 — 바닥 물 접촉 즉각 감지</li>
           <li><strong>Q6.</strong> 미세먼지 센서 — PM2.5·PM10 농도 측정</li>`
@@ -6138,7 +6183,7 @@ function t15GoStep(n){
   }
   const desc = document.getElementById('t15-task-desc');
   const instructions = {
-    1: `<p><strong class="font-bold text-slate-800 text-[14px]">📚 1단계 — 기기 분류 학습</strong></p>
+    1: `<p><strong class="font-bold text-slate-800 text-sm">📚 1단계 — 기기 분류 학습</strong></p>
 <p>지능형홈을 구성하는 16가지 기기를 인프라·감지·제어·인터페이스 4가지 분류로 살펴보고 각 기기의 역할·통신·연결 방식을 학습하시오.</p>
 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 1단계는 학습 단계로, 진단 없이 자유롭게 탐색하십시오.</p>`,
     2: `<p><strong class="font-bold text-slate-800">🎯 2단계 — 분류 퀴즈 (드래그 앤 드롭)</strong></p>
@@ -6396,7 +6441,7 @@ const t16Devices=[
   {id:'ethernet',name:'유선랜 (Ethernet)',group:'bandwidth',concept:'RJ-45 케이블을 통한 가장 빠르고 안정적인 유선 인터넷 연결. 이동성은 없음.',example:'지능형홈 허브, NAS, 고정형 IP카메라',comm:'유선 케이블'},
   {id:'ble',name:'BLE (Bluetooth)',group:'wpan',concept:'저전력 근거리 무선으로 기기 페어링에 주로 사용. 2017년부터 메시(다대다) 통신도 지원함.',example:'기기 초기 페어링, 스마트 태그',comm:'2.4GHz'},
   {id:'matter',name:'Matter',group:'standard',concept:'다양한 제조사의 기기를 하나의 언어로 소통하게 하는 통합 표준. Thread와 Wi-Fi 위에서 동작.',example:'애플·구글·삼성 연동 기기',comm:'IP 기반'},
-  {id:'rs485',name:'RS-485',group:'building',concept:'한국 건설사 아파트·오피스텔 표준 유선 직렬 통신. 차동 신호로 노이즈에 강하고 1:N 멀티드롭(최대 32개) 지원.',example:'월패드 ↔ 각 방 스위치·환기·가스제어',comm:'유선 직렬'},
+  {id:'rs485',name:'RS-485',group:'building',concept:'한국 건설사 아파트·오피스텔 표준 유선 직렬 통신. 차동 신호로 노이즈에 강하고 1:N 멀티드롭(최대 32개, 32 unit load — EIA/TIA-485-A 표준) 지원.',example:'월패드 ↔ 각 방 스위치·환기·가스제어',comm:'유선 직렬'},
   {id:'mqtt',name:'MQTT',group:'application',concept:'발행-구독 방식의 경량 IoT 메시징 프로토콜로, 브로커가 센서 데이터를 받아 구독 기기에 전달함.',example:'IoT 플랫폼, 실시간 데이터 수집',comm:'응용 계층'},
   {id:'coap',name:'CoAP',group:'application',concept:'웹(HTTP)을 경량화한 요청-응답 방식의 저전력 소형 기기용 프로토콜.',example:'제약 환경 소형 IoT 센서',comm:'응용 계층'}
 ];
@@ -6427,7 +6472,7 @@ t12Detail = {"rule": {"detail": [{"icon": "📘", "label": "개념", "text": "�
 // ── 4-4 3단계: 응급안전안심서비스 AI 고도화 모델 ──
 const t12S3Data=[
   {key:'sense',num:'①',title:'댁내 감지',icon:'📡',c:'blue',group:'학습 방식',tech:'비지도학습',
-   real:'게이트웨이 + 4종 센서(화재·활동량·응급호출·출입) + 웨어러블(심박·호흡·낙상)을 설치해, 활동량은 2초마다·생체신호는 5초마다 수집합니다.',
+   real:'게이트웨이 + 4종 센서(화재·활동량·응급호출·출입) + 웨어러블(심박·호흡·낙상)을 설치해, 보건복지부 「독거노인·장애인 응급안전안심서비스 사업안내」 댁내장비 규격서에 따른 주기로 활동량·생체신호를 상시 수집합니다.',
    now:'센서값이 정해진 임계치(예: 재실 중 활동 미감지 1시간)를 넘으면 이벤트를 발생시키는 규칙 기반 방식입니다.',
    ai:'비지도학습으로 거주자의 평소 생활 리듬(기상·식사·이동 패턴)을 스스로 학습해 개인별 정상 베이스라인을 만듭니다. 사람마다 다른 "평소"를 AI가 파악합니다.'},
   {key:'judge',num:'②',title:'이상 판단',icon:'🧠',c:'emerald',group:'딥러닝 모델',tech:'RNN/LSTM',
@@ -6435,11 +6480,11 @@ const t12S3Data=[
    now:'고정된 시간 기준(1시간) 초과 여부만으로 이상을 판단합니다.',
    ai:'RNN/LSTM으로 시간 흐름의 패턴 변화를 분석해, 단순 시간초과가 아니라 "평소와 미묘하게 다른 움직임"을 조기에 포착합니다. 낙상 전 비정상 패턴까지 예측적으로 감지할 수 있습니다.'},
   {key:'edge',num:'③',title:'엣지 처리',icon:'⚡',c:'rose',group:'실행 계층',tech:'Edge AI',
-   real:'게이트웨이가 화재·응급호출 감지 시 즉시 119에 자동 신고하고, 전원이 차단돼도 최소 2일간 응급 대응을 유지합니다.',
+   real:'게이트웨이가 화재·응급호출 감지 시 즉시 119에 자동 신고하고, 보건복지부 운영지침에 따른 정전 대비 예비전원으로 응급 대응을 유지합니다.',
    now:'감지 데이터를 중계서버(클라우드)로 보내 처리한 뒤 대응합니다.',
    ai:'Edge AI로 게이트웨이가 자체적으로 즉시 판단해, 인터넷 지연·단절과 무관하게 0초에 가깝게 대응합니다. 민감한 생체 데이터를 외부로 보내지 않아 프라이버시도 보호됩니다.'},
   {key:'care',num:'④',title:'대응 연계',icon:'💬',c:'purple',group:'생성형·자율 AI',tech:'AI 케어콜 (생성형 AI)',
-   real:'119 + 지역센터(응급관리요원) + 가족돌봄앱으로 3중 연계하고, AI 케어콜로 안부확인·말벗 등 정서지원을 제공합니다.',
+   real:'119 + 지역센터(응급관리요원) + 가족돌봄앱으로 3중 연계하고, AI 케어콜로 안부확인·말벗 등 정서지원을 제공합니다(보건복지부 「독거노인·장애인 응급안전안심서비스 사업안내」).',
    now:'정해진 시나리오 멘트를 자동 발신하는 단방향 안내 중심입니다.',
    ai:'생성형 AI(LLM) 기반 대화형 케어콜로, 어르신의 응답에 맞춰 자연스럽게 대화하며 안부·건강·정서를 함께 살핍니다. 외로움까지 돌보는 "말벗 AI"입니다.'}
 ];
@@ -6470,23 +6515,23 @@ function t12S3Show(key){
       <div><p class="text-[15px] font-black text-slate-800">${d.num} ${d.title}</p>
       <span class="inline-block text-[11px] px-2 py-0.5 rounded-full ${c.bg2} ${c.t} font-bold mt-0.5">1단계 학습: ${d.group} — ${d.tech}</span></div></div>
     <div class="mb-3 p-3 rounded-lg bg-slate-50 border border-slate-200">
-      <p class="text-[12px] font-black text-slate-500 mb-1">📋 실제 서비스 구조</p>
+      <p class="text-xs font-black text-slate-500 mb-1">📋 실제 서비스 구조</p>
       <p class="text-[13px] text-slate-600 font-normal leading-relaxed">${d.real}</p></div>
     <div class="grid md:grid-cols-2 gap-2">
       <div class="p-3 rounded-lg bg-slate-100 border border-slate-300">
-        <p class="text-[12px] font-black text-slate-500 mb-1">현재 방식</p>
+        <p class="text-xs font-black text-slate-500 mb-1">현재 방식</p>
         <p class="text-[13px] text-slate-600 font-normal leading-relaxed">${d.now}</p></div>
       <div class="p-3 rounded-lg ${c.bg} ${c.b}" style="border-width:1.5px">
-        <p class="text-[12px] font-black ${c.t} mb-1">✨ AI 고도화 — ${d.tech}</p>
+        <p class="text-xs font-black ${c.t} mb-1">✨ AI 고도화 — ${d.tech}</p>
         <p class="text-[13px] text-slate-700 font-normal leading-relaxed">${d.ai}</p></div>
     </div></div>`;
 }
 function t12GoStep(n){
   window.t12CurrentStep=n;
   const inst={
-    1:`<p><strong class="font-bold text-slate-800 text-[14px]">📚 1단계 — AI 기술 카드 학습</strong></p><p>AI 기술을 5개 그룹(AI 발전·학습 방식·딥러닝 모델·생성형·자율·실행 계층)으로 나눠 각 기술의 개념·현장·확인문제를 학습하시오.</p><p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 1단계는 학습 단계로, 진단 없이 자유롭게 탐색하십시오.</p>`,
-    2:`<p><strong class="font-bold text-slate-800 text-[14px]">🎯 2단계 — 기술 체계도 분류 (드래그 앤 드롭)</strong></p><p>하단의 설명 카드를 드래그하여 해당 AI 기술 노드에 놓으시오. 정답이면 노드가 클리어됩니다.</p><p class="text-[13px] text-slate-600 font-normal mt-1">※ AI 발전 → 학습 방식 → 딥러닝 모델 → 생성형·자율 → 실행 계층 순서로 연결됩니다.</p><p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 15개 카드를 모두 노드에 연결한 후 [진단 실행]을 클릭하십시오.</p>`,
-    3:`<p><strong class="font-bold text-slate-800 text-[14px]">🧠 3단계 — 실무 적용: 응급안전안심서비스 AI 고도화 모델</strong></p><p>1단계에서 학습한 AI 기술이 실제 '독거노인·장애인 응급안전안심서비스'에 어떻게 적용되는지 확인하시오. 아래 흐름도의 각 단계를 클릭하면 <strong class="font-bold text-slate-700">현재 방식</strong>과 <strong class="font-bold text-slate-700">AI 고도화 방향</strong>을 비교할 수 있습니다.</p><p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 보건복지부·사회보장정보원이 운영하는 실제 서비스 구조를 토대로 한 미래 적용 모델입니다.</p>`
+    1:`<p><strong class="font-bold text-slate-800 text-sm">📚 1단계 — AI 기술 카드 학습</strong></p><p>AI 기술을 5개 그룹(AI 발전·학습 방식·딥러닝 모델·생성형·자율·실행 계층)으로 나눠 각 기술의 개념·현장·확인문제를 학습하시오.</p><p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 1단계는 학습 단계로, 진단 없이 자유롭게 탐색하십시오.</p>`,
+    2:`<p><strong class="font-bold text-slate-800 text-sm">🎯 2단계 — 기술 체계도 분류 (드래그 앤 드롭)</strong></p><p>하단의 설명 카드를 드래그하여 해당 AI 기술 노드에 놓으시오. 정답이면 노드가 클리어됩니다.</p><p class="text-[13px] text-slate-600 font-normal mt-1">※ AI 발전 → 학습 방식 → 딥러닝 모델 → 생성형·자율 → 실행 계층 순서로 연결됩니다.</p><p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 15개 카드를 모두 노드에 연결한 후 [진단 실행]을 클릭하십시오.</p>`,
+    3:`<p><strong class="font-bold text-slate-800 text-sm">🧠 3단계 — 실무 적용: 응급안전안심서비스 AI 고도화 모델</strong></p><p>1단계에서 학습한 AI 기술이 실제 '독거노인·장애인 응급안전안심서비스'에 어떻게 적용되는지 확인하시오. 아래 흐름도의 각 단계를 클릭하면 <strong class="font-bold text-slate-700">현재 방식</strong>과 <strong class="font-bold text-slate-700">AI 고도화 방향</strong>을 비교할 수 있습니다.</p><p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 보건복지부·사회보장정보원이 운영하는 실제 서비스 구조를 토대로 한 미래 적용 모델입니다.</p>`
   };
   const dsc=document.getElementById('t12-task-desc'); if(dsc) dsc.innerHTML=inst[n];
   const on='flex-1 py-2.5 text-[15px] font-black rounded-xl border-2 transition-all border-slate-700 bg-slate-700 text-white';
@@ -6556,17 +6601,17 @@ function t12ShowDetail(id){
       <div class="space-y-3">
         ${d.detail.map(p=>`
           <div>
-            <p class="text-[12px] font-black text-amber-700 mb-0.5">${p.icon} ${p.label}</p>
+            <p class="text-xs font-black text-amber-700 mb-0.5">${p.icon} ${p.label}</p>
             <p class="text-[13px] font-normal text-slate-700 leading-relaxed">${p.text}</p>
           </div>`).join('')}
       </div>
       ${d.quiz ? `<div class="mt-4 pt-3 border-t border-amber-100">
-        <p class="text-[12px] font-black text-amber-700 mb-2">🤔 생각해보기</p>
+        <p class="text-xs font-black text-amber-700 mb-2">🤔 생각해보기</p>
         <p class="text-[13px] font-bold text-slate-800 mb-2 leading-snug">${d.quiz.q}</p>
         <div class="space-y-1.5 mb-2">
           ${d.quiz.options.map((o,oi)=>`<div class="px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-normal text-slate-600">${oi+1}. ${o}</div>`).join('')}
         </div>
-        <button onclick="t12ToggleAnswer('${id}')" id="t12-ans-btn" class="text-[12px] font-black text-amber-600 hover:text-amber-700 transition-colors">정답·해설 보기 ▸</button>
+        <button onclick="t12ToggleAnswer('${id}')" id="t12-ans-btn" class="text-xs font-black text-amber-600 hover:text-amber-700 transition-colors">정답·해설 보기 ▸</button>
         <div id="t12-quiz-ans" class="hidden mt-2 p-2.5 rounded-lg bg-emerald-50 text-[13px] font-normal text-emerald-800 leading-snug"></div>
       </div>` : ''}
     </div>`;
@@ -6651,7 +6696,7 @@ function t16GoStep(n){
   }
   const desc = document.getElementById('t16-task-desc');
   const instructions = {
-    1: `<p><strong class="font-bold text-slate-800 text-[14px]">📚 1단계 — 프로토콜 분류 참고표 학습</strong></p>
+    1: `<p><strong class="font-bold text-slate-800 text-sm">📚 1단계 — 프로토콜 분류 참고표 학습</strong></p>
 <p>지능형홈에서 사용되는 8가지 주요 통신 프로토콜을 메시 네트워크형·광대역 인터넷 연결형·근거리 직접 연결형·통합 표준형·건축 설비 연동형 5가지 분류로 살펴보고, 각 프로토콜의 특징과 적합한 사용 상황을 학습하시오.</p>
 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 1단계는 학습 단계로, 진단 없이 자유롭게 탐색하십시오.</p>`,
     2: `<p><strong class="font-bold text-slate-800">🎯 2단계 — 분류 퀴즈 (드래그 앤 드롭)</strong></p>
@@ -6898,7 +6943,7 @@ const t17Cards = [
    example:'예: 앱에서 조명 ON 명령 → 릴레이 \"딸깍\" → 회로 연결', detail:[{"icon": "📘", "label": "개념", "text": "릴레이는 작은 제어 신호로 큰 전류가 흐르는 회로를 켜고 끄는 스위치 부품입니다. 스마트 스위치 내부에서 무선 신호와 실제 220V 전원 회로를 잇는 가교 역할을 합니다."}, {"icon": "🔧", "label": "현장", "text": "앱에서 조명 ON 명령을 보내면 벽 속 스마트 스위치 내부의 릴레이가 딸깍 작동하며 조명 회로가 연결됩니다."}, {"icon": "💡", "label": "알아두기", "text": "무선 통신 자체가 조명을 켜는 것이 아니라, 실제 전류를 잇는 것은 릴레이입니다. 접점 정격을 초과하는 부하를 물리면 접점이 녹아붙어(융착) 앱으로 꺼도 안 꺼지는 고장이 납니다."}], quiz:{"q": "스마트홈 제어기기 내부의 릴레이에 대한 설명으로 옳지 않은 것은?", "options": ["소전력 신호로 220V 라인을 ON/OFF한다", "작동 시 딸깍 접점음이 난다", "과부하 시 접점이 녹아붙을 수 있다", "AC를 DC로 변환하고 전압을 낮춘다"], "ans": 3, "explain": "AC→DC 변환은 SMPS의 역할이고, 릴레이는 회로 접점을 물리적으로 여닫는 스위치입니다."}},
   {id:'c3', name:'누전차단기 (ELB)', group:'device',
    concept:'누설 전류 발생 시 0.03초 이내에 자동으로 전원을 차단하여 감전을 방지하는 안전 장치.',
-   example:'예: 욕실·세탁실 등 습한 공간 의무 설치', detail:[{"icon": "📘", "label": "개념", "text": "누전차단기(ELB)는 들어오는 전류와 나가는 전류의 차이(누설 전류)를 감시해, 그 차이가 일정 수준(주택용 기준 약 30mA) 이상이면 감전·화재를 막기 위해 0.03초 이내에 회로를 자동 차단하는 안전장치입니다."}, {"icon": "🔧", "label": "현장", "text": "욕실·세탁실·주방 등 습한 공간의 전열 콘센트 회로에는 정격감도전류 15mA급 고감도 누전차단기로 별도 분기 회로를 구성합니다."}, {"icon": "💡", "label": "알아두기", "text": "과전류만 막는 배선차단기와 달리, 누전차단기는 누전과 과전류를 모두 잡습니다. 차단 후 앞면의 누전 표시 버튼이 튀어나와 있으면 누전으로 끊긴 것입니다."}], quiz:{"q": "누전 사고 시 감전 보호를 위해 자동으로 전원을 차단하는 장치는?", "options": ["릴레이", "SMPS", "누전차단기", "접지봉"], "ans": 2, "explain": "누전차단기는 누설 전류를 감지하면 자동으로 회로를 차단해 인체를 보호합니다."}},
+   example:'예: 욕실·세탁실 등 습한 공간 의무 설치', detail:[{"icon": "📘", "label": "개념", "text": "누전차단기(ELB)는 들어오는 전류와 나가는 전류의 차이(누설 전류)를 감시해, 그 차이가 일정 수준(주택용 기준 약 30mA) 이상이면 감전·화재를 막기 위해 0.03초 이내에 회로를 자동 차단하는 안전장치입니다(「산업안전보건기준에 관한 규칙」 제304조)."}, {"icon": "🔧", "label": "현장", "text": "욕실·세탁실·주방 등 습한 공간의 전열 콘센트 회로에는 정격감도전류 15mA급 고감도 누전차단기로 별도 분기 회로를 구성합니다(한국전기설비규정 KEC 234.5)."}, {"icon": "💡", "label": "알아두기", "text": "과전류만 막는 배선차단기와 달리, 누전차단기는 누전과 과전류를 모두 잡습니다. 차단 후 앞면의 누전 표시 버튼이 튀어나와 있으면 누전으로 끊긴 것입니다."}], quiz:{"q": "누전 사고 시 감전 보호를 위해 자동으로 전원을 차단하는 장치는?", "options": ["릴레이", "SMPS", "누전차단기", "접지봉"], "ans": 2, "explain": "누전차단기는 누설 전류를 감지하면 자동으로 회로를 차단해 인체를 보호합니다."}},
 ];
 
 const t17GroupColor = {
@@ -6976,7 +7021,7 @@ function t17GoStep(n){
   }
   const desc = document.getElementById('t17-task-desc');
   const instructions = {
-    1: `<p><strong class="font-bold text-slate-800 text-[14px]">📚 1단계 — 기초 개념 학습</strong></p>
+    1: `<p><strong class="font-bold text-slate-800 text-sm">📚 1단계 — 기초 개념 학습</strong></p>
 <p>지능형홈 구축의 출발점이 되는 전기·전력의 핵심 개념을 전기 기본 성질·한국형 배선 표준·변환 및 제어 부품 3가지 분류로 살펴보고, 9개 핵심 개념을 학습하시오.</p>
 <p class="text-[13px] text-slate-600 font-normal mt-1 pulse-soft">※ 1단계는 학습 단계로, 진단 없이 자유롭게 탐색하십시오.</p>`,
     2: `<p><strong class="font-bold text-slate-800">🎯 2단계 — 역할 매칭 퀴즈 (드래그 앤 드롭)</strong></p>
@@ -7052,17 +7097,17 @@ function t17ShowDetail(id){
       <div class="space-y-3">
         ${d.detail.map(p=>`
           <div>
-            <p class="text-[12px] font-black text-amber-700 mb-0.5">${p.icon} ${p.label}</p>
+            <p class="text-xs font-black text-amber-700 mb-0.5">${p.icon} ${p.label}</p>
             <p class="text-[13px] font-normal text-slate-700 leading-relaxed">${p.text}</p>
           </div>`).join('')}
       </div>
       ${d.quiz ? `<div class="mt-4 pt-3 border-t border-amber-100">
-        <p class="text-[12px] font-black text-amber-700 mb-2">🤔 생각해보기</p>
+        <p class="text-xs font-black text-amber-700 mb-2">🤔 생각해보기</p>
         <p class="text-[13px] font-bold text-slate-800 mb-2 leading-snug">${d.quiz.q}</p>
         <div class="space-y-1.5 mb-2">
           ${d.quiz.options.map((o,oi)=>`<div class="px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-normal text-slate-600">${oi+1}. ${o}</div>`).join('')}
         </div>
-        <button onclick="t17ToggleAnswer('${id}')" id="t17-ans-btn" class="text-[12px] font-black text-amber-600 hover:text-amber-700 transition-colors">정답·해설 보기 ▸</button>
+        <button onclick="t17ToggleAnswer('${id}')" id="t17-ans-btn" class="text-xs font-black text-amber-600 hover:text-amber-700 transition-colors">정답·해설 보기 ▸</button>
         <div id="t17-quiz-ans" class="hidden mt-2 p-2.5 rounded-lg bg-emerald-50 text-[13px] font-normal text-emerald-800 leading-snug"></div>
       </div>` : ''}
     </div>`;
@@ -7102,17 +7147,17 @@ function t15ShowDetail(id){
       <div class="space-y-3">
         ${d.detail.map(p=>`
           <div>
-            <p class="text-[12px] font-black text-amber-700 mb-0.5">${p.icon} ${p.label}</p>
+            <p class="text-xs font-black text-amber-700 mb-0.5">${p.icon} ${p.label}</p>
             <p class="text-[13px] font-normal text-slate-700 leading-relaxed">${p.text}</p>
           </div>`).join('')}
       </div>
       ${d.quiz ? `<div class="mt-4 pt-3 border-t border-amber-100">
-        <p class="text-[12px] font-black text-amber-700 mb-2">🤔 생각해보기</p>
+        <p class="text-xs font-black text-amber-700 mb-2">🤔 생각해보기</p>
         <p class="text-[13px] font-bold text-slate-800 mb-2 leading-snug">${d.quiz.q}</p>
         <div class="space-y-1.5 mb-2">
           ${d.quiz.options.map((o,oi)=>`<div class="px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-normal text-slate-600">${oi+1}. ${o}</div>`).join('')}
         </div>
-        <button onclick="t15ToggleAnswer('${id}')" id="t15-ans-btn" class="text-[12px] font-black text-amber-600 hover:text-amber-700 transition-colors">정답·해설 보기 ▸</button>
+        <button onclick="t15ToggleAnswer('${id}')" id="t15-ans-btn" class="text-xs font-black text-amber-600 hover:text-amber-700 transition-colors">정답·해설 보기 ▸</button>
         <div id="t15-quiz-ans" class="hidden mt-2 p-2.5 rounded-lg bg-emerald-50 text-[13px] font-normal text-emerald-800 leading-snug"></div>
       </div>` : ''}
     </div>`;
@@ -7137,7 +7182,7 @@ function t15ToggleAnswer(id){
   }
 }
 
-t16Detail = {"zigbee": {"detail": [{"icon": "📘", "label": "개념", "text": "Zigbee는 2.4GHz 대역의 저전력 무선 프로토콜로, 코디네이터(허브)·라우터(중계)·엔드디바이스(말단)의 3계층 구조로 메시 네트워크를 이룹니다. 지능형홈에서 가장 널리 쓰입니다."}, {"icon": "🔧", "label": "현장", "text": "센서·스위치·조명 등 저전력 기기에 쓰입니다. 현재 Zigbee 3.0으로 규격이 통합돼 제조사 간 호환성이 개선됐습니다."}, {"icon": "💡", "label": "알아두기", "text": "같은 2.4GHz를 쓰는 Wi-Fi와 채널이 겹치면 간섭이 생기므로 다른 채널로 분리해야 합니다. 벽 투과력은 900MHz의 Z-Wave보다 약하고, 신호를 모으는 코디네이터(허브)가 반드시 필요합니다."}], "quiz": {"q": "Zigbee 네트워크의 3계층 구조에서, 전체를 관장하며 반드시 있어야 하는 것은?", "options": ["엔드디바이스", "라우터", "코디네이터(허브)", "게이트웨이"], "ans": 2, "explain": "Zigbee는 코디네이터·라우터·엔드디바이스로 구성되며, 네트워크를 생성·관리하는 코디네이터(허브)가 반드시 필요합니다."}}, "thread": {"detail": [{"icon": "📘", "label": "개념", "text": "Thread는 Zigbee처럼 2.4GHz 대역의 저전력 메시 네트워크지만, 모든 기기가 인터넷 주소(IPv6)를 직접 갖는 것이 가장 큰 차이입니다. IP 기반이라 클라우드·인터넷 기기와 변환 없이 소통합니다."}, {"icon": "🔧", "label": "현장", "text": "Matter를 지원하는 최신 센서·스위치·플러그에 쓰입니다. 상시 전원 기기가 라우터 역할을 해, 기기가 늘수록 그물망이 촘촘해지고 음영을 자동 복구합니다."}, {"icon": "💡", "label": "알아두기", "text": "Zigbee와 같은 2.4GHz라 Wi-Fi 간섭·벽 투과 한계는 비슷합니다. IP 기반이라 통합 표준 Matter의 핵심 기반 프로토콜로 쓰이며, 별도의 Border Router(보더 라우터)가 필요합니다."}], "quiz": {"q": "Thread가 Zigbee와 가장 크게 차별화되는 특징은?", "options": ["900MHz를 사용한다", "적외선으로 통신한다", "모든 기기가 IPv6 주소를 갖는 IP 기반이다", "유선 케이블을 쓴다"], "ans": 2, "explain": "Thread는 저전력 메시지만 인터넷 표준 주소(IPv6) 기반이라, 클라우드·다른 IP 기기와 직접 통신할 수 있습니다."}}, "zwave": {"detail": [{"icon": "📘", "label": "개념", "text": "Z-Wave는 900MHz대(국내 약 920~923MHz)를 쓰는 저전력 메시 네트워크입니다. 주파수 파장이 길어 벽 투과력이 좋고, 2.4GHz와 대역이 달라 Wi-Fi 간섭이 없습니다."}, {"icon": "🔧", "label": "현장", "text": "도어락·방범센서처럼 안정성이 중요한 기기에 쓰입니다. 두꺼운 벽·철문이 많은 아파트에서 신호를 멀리 안정적으로 보낼 때 우선 검토됩니다."}, {"icon": "💡", "label": "알아두기", "text": "2.4GHz를 쓰는 Wi-Fi·Zigbee·BLE와 주파수가 독립돼 간섭 끊김이 없습니다. 단, 국가별 지정 주파수가 달라 해외 직구 기기는 국내에서 연동되지 않을 수 있어 주의합니다."}], "quiz": {"q": "Wi-Fi 간섭이 심한 환경에서, 두꺼운 벽 투과까지 유리한 프로토콜은?", "options": ["Zigbee", "BLE", "Z-Wave", "Thread"], "ans": 2, "explain": "Z-Wave는 2.4GHz가 아닌 900MHz대를 쓰므로 Wi-Fi 간섭이 없고, 파장이 길어 벽 투과 성능이 뛰어납니다."}}, "ble": {"detail": [{"icon": "📘", "label": "개념", "text": "BLE는 2.4GHz 근거리 무선 프로토콜로, 일반 블루투스(음악 재생용)와 달리 전력을 크게 줄여 동전형 배터리로도 오래 동작합니다. 2017년 BLE Mesh가 표준화돼 1:1뿐 아니라 다대다 메시 통신도 가능합니다."}, {"icon": "🔧", "label": "현장", "text": "새 기기를 앱에 처음 등록(페어링)하는 단계, 스마트 태그, 근거리 인증에 쓰입니다."}, {"icon": "💡", "label": "알아두기", "text": "버전 차이가 중요합니다 — 4.0(BLE 최초)·4.2(보안·속도 개선)·5.0(거리·속도 대폭 향상). BLE Mesh는 5.0 전용이 아니라 4.0 이상이면 펌웨어로 지원됩니다. 원격 자동화엔 Wi-Fi로 중계할 허브·브릿지가 필요합니다."}], "quiz": {"q": "BLE에 대한 설명으로 옳은 것은?", "options": ["음악 스트리밍 전용이다", "2017년 메시가 표준화돼 다대다 통신도 가능하다", "유선 전용이다", "900MHz를 쓴다"], "ans": 1, "explain": "BLE는 저전력 근거리 무선으로, 2017년 BLE Mesh 표준화 이후 1:1을 넘어 다대다 메시 통신까지 지원합니다."}}, "wifi": {"detail": [{"icon": "📘", "label": "개념", "text": "Wi-Fi는 2.4/5GHz 대역의 고속 무선 네트워크로, 공유기를 중심으로 대용량 데이터를 전송합니다. 가정 내 기기를 인터넷·클라우드와 연결하는 핵심 인프라입니다."}, {"icon": "🔧", "label": "현장", "text": "IP 카메라·스마트 TV·허브처럼 대용량 전송이나 상시 전원 기기에 쓰입니다. 허브 없이 공유기에 바로 연결되는 장점이 있습니다."}, {"icon": "💡", "label": "알아두기", "text": "전력 소모가 커 배터리 센서엔 부적합하고, 저전력 센서는 Zigbee·Thread가 낫습니다. 너무 많은 기기가 한 공유기에 몰리면 끊김이 생기므로 동시 접속 용량을 확인해야 합니다."}], "quiz": {"q": "IP 카메라·스마트 가전을 Wi-Fi로 다수 배치할 때 가장 주의 깊게 점검할 인프라 요소는?", "options": ["Zigbee 라우터 개수", "공유기의 동시 접속 한계와 음영 구역", "도어락 건전지 주기", "RS-485 배선 단선"], "ans": 1, "explain": "Wi-Fi 기기는 허브 없이 공유기에 몰려 접속하므로, 공유기 용량을 초과하거나 음영이 생기면 영상 등이 끊깁니다."}}, "ethernet": {"detail": [{"icon": "📘", "label": "개념", "text": "유선랜(이더넷)은 RJ-45 케이블로 기기를 직접 연결하는 유선 방식입니다. 무선 간섭이 없어 현존 홈 네트워크 중 가장 빠르고 안정적입니다."}, {"icon": "🔧", "label": "현장", "text": "허브·NAS·고정형 IP 카메라처럼 끊기면 안 되는 핵심 장비의 백본에 쓰입니다. 특히 허브와 공유기 사이는 유선 결선을 원칙으로 합니다."}, {"icon": "💡", "label": "알아두기", "text": "안정성은 최고지만 이동성이 없고, 마감 공사 전에 배선 관로를 미리 확보해야 합니다. 옮겨야 하는 센서류에는 적용하기 어렵습니다."}], "quiz": {"q": "끊기면 안 되는 메인 허브에 가장 안정적인 연결 방식으로 권장되는 것은?", "options": ["BLE", "Zigbee", "Wi-Fi", "유선랜(Ethernet)"], "ans": 3, "explain": "유선랜은 물리적 케이블 전송이라 무선 간섭·장애물 영향을 원천 차단해, 핵심 장비에 가장 안정적입니다."}}, "rs485": {"detail": [{"icon": "📘", "label": "개념", "text": "RS-485는 두 신호선의 전압 차이(차동 신호)로 데이터를 주고받는 유선 직렬 통신 규격입니다. 노이즈에 강하고, 한 통신선에 여러 장치를 잇는 1:N 멀티드롭(최대 32개)을 지원합니다."}, {"icon": "🔧", "label": "현장", "text": "국내 아파트·오피스텔 월패드의 표준 유선 통신입니다. 거실 월패드와 각 방 스위치·난방·환기·가스제어가 이 방식으로 연결됩니다."}, {"icon": "💡", "label": "알아두기", "text": "무선 IoT와 달리 건축 설비 중심의 유선 방식입니다. 기존 아파트를 스마트홈으로 개조할 땐 월패드의 RS-485 신호 체계를 분석해 무선 허브와 연동하는 작업이 관건이며, 배선이 바뀌면 통신 불능·장비 손상이 생기므로 주의합니다."}], "quiz": {"q": "국내 아파트 월패드와 각 방 제어기기(조명·난방·가스) 간에 쓰이는 표준 유선 직렬 통신은?", "options": ["Thread", "BLE", "RS-485", "Zigbee"], "ans": 2, "explain": "RS-485는 노이즈에 강하고 다수 연결이 가능해, 국내 건설사들이 월패드 기반 빌트인 기기 제어의 표준으로 채택해 왔습니다."}}, "matter": {"detail": [{"icon": "📘", "label": "개념", "text": "Matter는 통신 프로토콜(주파수)이 아니라, 서로 다른 제조사 기기를 같은 언어로 소통하게 하는 통합 표준입니다. 자체 무선이 아니라 Wi-Fi·Thread 위에서 데이터 형식만 통일해 동작합니다."}, {"icon": "🔧", "label": "현장", "text": "애플·구글·삼성처럼 플랫폼이 달라 연동되지 않던 기기를 하나의 앱으로 통합 제어하게 해줍니다."}, {"icon": "💡", "label": "알아두기", "text": "\"Matter 주파수\"란 말은 틀린 표현입니다. Matter 제품은 하부 통신이 Wi-Fi인지 Thread인지 확인해야 하며, Thread 기반이면 현장에 Thread 보더 라우터가 있어야 합니다."}], "quiz": {"q": "Matter에 대한 설명으로 가장 적절한 것은?", "options": ["900MHz 메시 프로토콜이다", "적외선 통신 방식이다", "제조사 간 호환을 위한 통합 표준이며 Wi-Fi·Thread 위에서 동작한다", "유선 직렬 통신 방식이다"], "ans": 2, "explain": "Matter는 무선 프로토콜이 아니라 제조사 간 상호운용을 위한 표준으로, 실제 전송은 Wi-Fi·Thread 등을 빌려 수행합니다."}}, "mqtt": {"detail": [{"icon": "📘", "label": "개념", "text": "MQTT는 발행(Publish)-구독(Subscribe) 방식의 경량 메시징 프로토콜입니다. 센서가 보낸 데이터를 중앙 브로커(서버)가 받아, 그 정보를 구독하는 기기들에 전달합니다. 적은 대역폭으로 동작해 IoT의 사실상 표준입니다."}, {"icon": "🔧", "label": "현장", "text": "센서 데이터를 서버로 모으고 자동화 명령을 내리는 IoT 플랫폼에 광범위하게 쓰입니다. 대규모 실시간 서비스(예: 배달앱 주문 상태 전송)도 채택합니다."}, {"icon": "💡", "label": "알아두기", "text": "Zigbee·Wi-Fi 같은 물리 통신 위에서 도는 '응용 계층' 프로토콜이라, 신호를 보내는 물리 방식과는 층이 다릅니다. 데이터를 중계할 중앙 브로커(예: Mosquitto)가 필요합니다."}], "quiz": {"q": "센서 데이터를 중앙 브로커로 모아 구독하는 기기들에 실시간 전달하는 IoT 표준 메시징 방식은?", "options": ["RS-485", "MQTT", "Z-Wave", "유선랜"], "ans": 1, "explain": "MQTT는 발행-구독 구조로, 브로커가 센서 데이터를 받아 구독자에게 전달하는 IoT의 대표적 메시징 프로토콜입니다."}}, "coap": {"detail": [{"icon": "📘", "label": "개념", "text": "CoAP는 제약이 많은 저전력·소형 기기를 위한 경량 통신 프로토콜입니다. 웹(HTTP)과 유사한 요청-응답 방식을 쓰되 훨씬 가볍게 만들었고, UDP 기반이라 빠르고 효율적입니다."}, {"icon": "🔧", "label": "현장", "text": "메모리·전력이 부족한 소형 IoT 센서나 제약 환경의 기기 제어에 쓰입니다."}, {"icon": "💡", "label": "알아두기", "text": "같은 응용 계층이지만 방식이 다릅니다 — MQTT가 발행-구독(브로커 경유)이라면, CoAP는 웹처럼 기기에 직접 요청-응답합니다."}], "quiz": {"q": "저전력 소형 IoT 기기용으로, 웹(HTTP)과 유사하나 더 가벼운 요청-응답 프로토콜은?", "options": ["MQTT", "CoAP", "Zigbee", "BLE"], "ans": 1, "explain": "CoAP는 HTTP를 경량화한 요청-응답 방식의 응용 계층 프로토콜로, 제약 많은 소형 기기에 적합합니다."}}};
+t16Detail = {"zigbee": {"detail": [{"icon": "📘", "label": "개념", "text": "Zigbee는 2.4GHz 대역의 저전력 무선 프로토콜로, 코디네이터(허브)·라우터(중계)·엔드디바이스(말단)의 3계층 구조로 메시 네트워크를 이룹니다. 지능형홈에서 가장 널리 쓰입니다."}, {"icon": "🔧", "label": "현장", "text": "센서·스위치·조명 등 저전력 기기에 쓰입니다. 현재 Zigbee 3.0으로 규격이 통합돼 제조사 간 호환성이 개선됐습니다."}, {"icon": "💡", "label": "알아두기", "text": "같은 2.4GHz를 쓰는 Wi-Fi와 채널이 겹치면 간섭이 생기므로 다른 채널로 분리해야 합니다. 벽 투과력은 900MHz의 Z-Wave보다 약하고, 신호를 모으는 코디네이터(허브)가 반드시 필요합니다."}], "quiz": {"q": "Zigbee 네트워크의 3계층 구조에서, 전체를 관장하며 반드시 있어야 하는 것은?", "options": ["엔드디바이스", "라우터", "코디네이터(허브)", "게이트웨이"], "ans": 2, "explain": "Zigbee는 코디네이터·라우터·엔드디바이스로 구성되며, 네트워크를 생성·관리하는 코디네이터(허브)가 반드시 필요합니다."}}, "thread": {"detail": [{"icon": "📘", "label": "개념", "text": "Thread는 Zigbee처럼 2.4GHz 대역의 저전력 메시 네트워크지만, 모든 기기가 인터넷 주소(IPv6)를 직접 갖는 것이 가장 큰 차이입니다. IP 기반이라 클라우드·인터넷 기기와 변환 없이 소통합니다."}, {"icon": "🔧", "label": "현장", "text": "Matter를 지원하는 최신 센서·스위치·플러그에 쓰입니다. 상시 전원 기기가 라우터 역할을 해, 기기가 늘수록 그물망이 촘촘해지고 음영을 자동 복구합니다."}, {"icon": "💡", "label": "알아두기", "text": "Zigbee와 같은 2.4GHz라 Wi-Fi 간섭·벽 투과 한계는 비슷합니다. IP 기반이라 통합 표준 Matter의 핵심 기반 프로토콜로 쓰이며, 별도의 Border Router(보더 라우터)가 필요합니다."}], "quiz": {"q": "Thread가 Zigbee와 가장 크게 차별화되는 특징은?", "options": ["900MHz를 사용한다", "적외선으로 통신한다", "모든 기기가 IPv6 주소를 갖는 IP 기반이다", "유선 케이블을 쓴다"], "ans": 2, "explain": "Thread는 저전력 메시지만 인터넷 표준 주소(IPv6) 기반이라, 클라우드·다른 IP 기기와 직접 통신할 수 있습니다."}}, "zwave": {"detail": [{"icon": "📘", "label": "개념", "text": "Z-Wave는 900MHz대(국내 920.9/921.7/923.1MHz — 국립전파연구원 「무선설비규칙」 917~923.5MHz ISM대역)를 쓰는 저전력 메시 네트워크입니다. 주파수 파장이 길어 벽 투과력이 좋고, 2.4GHz와 대역이 달라 Wi-Fi 간섭이 없습니다."}, {"icon": "🔧", "label": "현장", "text": "도어락·방범센서처럼 안정성이 중요한 기기에 쓰입니다. 두꺼운 벽·철문이 많은 아파트에서 신호를 멀리 안정적으로 보낼 때 우선 검토됩니다."}, {"icon": "💡", "label": "알아두기", "text": "2.4GHz를 쓰는 Wi-Fi·Zigbee·BLE와 주파수가 독립돼 간섭 끊김이 없습니다. 단, 국가별 지정 주파수가 달라 해외 직구 기기는 국내에서 연동되지 않을 수 있어 주의합니다."}], "quiz": {"q": "Wi-Fi 간섭이 심한 환경에서, 두꺼운 벽 투과까지 유리한 프로토콜은?", "options": ["Zigbee", "BLE", "Z-Wave", "Thread"], "ans": 2, "explain": "Z-Wave는 2.4GHz가 아닌 900MHz대를 쓰므로 Wi-Fi 간섭이 없고, 파장이 길어 벽 투과 성능이 뛰어납니다."}}, "ble": {"detail": [{"icon": "📘", "label": "개념", "text": "BLE는 2.4GHz 근거리 무선 프로토콜로, 일반 블루투스(음악 재생용)와 달리 전력을 크게 줄여 동전형 배터리로도 오래 동작합니다. 2017년 BLE Mesh가 표준화돼 1:1뿐 아니라 다대다 메시 통신도 가능합니다."}, {"icon": "🔧", "label": "현장", "text": "새 기기를 앱에 처음 등록(페어링)하는 단계, 스마트 태그, 근거리 인증에 쓰입니다."}, {"icon": "💡", "label": "알아두기", "text": "버전 차이가 중요합니다 — 4.0(BLE 최초)·4.2(보안·속도 개선)·5.0(거리·속도 대폭 향상). BLE Mesh는 5.0 전용이 아니라 4.0 이상이면 펌웨어로 지원됩니다. 원격 자동화엔 Wi-Fi로 중계할 허브·브릿지가 필요합니다."}], "quiz": {"q": "BLE에 대한 설명으로 옳은 것은?", "options": ["음악 스트리밍 전용이다", "2017년 메시가 표준화돼 다대다 통신도 가능하다", "유선 전용이다", "900MHz를 쓴다"], "ans": 1, "explain": "BLE는 저전력 근거리 무선으로, 2017년 BLE Mesh 표준화 이후 1:1을 넘어 다대다 메시 통신까지 지원합니다."}}, "wifi": {"detail": [{"icon": "📘", "label": "개념", "text": "Wi-Fi는 2.4/5GHz 대역의 고속 무선 네트워크로, 공유기를 중심으로 대용량 데이터를 전송합니다. 가정 내 기기를 인터넷·클라우드와 연결하는 핵심 인프라입니다."}, {"icon": "🔧", "label": "현장", "text": "IP 카메라·스마트 TV·허브처럼 대용량 전송이나 상시 전원 기기에 쓰입니다. 허브 없이 공유기에 바로 연결되는 장점이 있습니다."}, {"icon": "💡", "label": "알아두기", "text": "전력 소모가 커 배터리 센서엔 부적합하고, 저전력 센서는 Zigbee·Thread가 낫습니다. 너무 많은 기기가 한 공유기에 몰리면 끊김이 생기므로 동시 접속 용량을 확인해야 합니다."}], "quiz": {"q": "IP 카메라·스마트 가전을 Wi-Fi로 다수 배치할 때 가장 주의 깊게 점검할 인프라 요소는?", "options": ["Zigbee 라우터 개수", "공유기의 동시 접속 한계와 음영 구역", "도어락 건전지 주기", "RS-485 배선 단선"], "ans": 1, "explain": "Wi-Fi 기기는 허브 없이 공유기에 몰려 접속하므로, 공유기 용량을 초과하거나 음영이 생기면 영상 등이 끊깁니다."}}, "ethernet": {"detail": [{"icon": "📘", "label": "개념", "text": "유선랜(이더넷)은 RJ-45 케이블로 기기를 직접 연결하는 유선 방식입니다. 무선 간섭이 없어 현존 홈 네트워크 중 가장 빠르고 안정적입니다."}, {"icon": "🔧", "label": "현장", "text": "허브·NAS·고정형 IP 카메라처럼 끊기면 안 되는 핵심 장비의 백본에 쓰입니다. 특히 허브와 공유기 사이는 유선 결선을 원칙으로 합니다."}, {"icon": "💡", "label": "알아두기", "text": "안정성은 최고지만 이동성이 없고, 마감 공사 전에 배선 관로를 미리 확보해야 합니다. 옮겨야 하는 센서류에는 적용하기 어렵습니다."}], "quiz": {"q": "끊기면 안 되는 메인 허브에 가장 안정적인 연결 방식으로 권장되는 것은?", "options": ["BLE", "Zigbee", "Wi-Fi", "유선랜(Ethernet)"], "ans": 3, "explain": "유선랜은 물리적 케이블 전송이라 무선 간섭·장애물 영향을 원천 차단해, 핵심 장비에 가장 안정적입니다."}}, "rs485": {"detail": [{"icon": "📘", "label": "개념", "text": "RS-485는 두 신호선의 전압 차이(차동 신호)로 데이터를 주고받는 유선 직렬 통신 규격입니다. 노이즈에 강하고, 한 통신선에 여러 장치를 잇는 1:N 멀티드롭(최대 32개, 32 unit load — EIA/TIA-485-A 표준)을 지원합니다."}, {"icon": "🔧", "label": "현장", "text": "국내 아파트·오피스텔 월패드의 표준 유선 통신입니다. 거실 월패드와 각 방 스위치·난방·환기·가스제어가 이 방식으로 연결됩니다."}, {"icon": "💡", "label": "알아두기", "text": "무선 IoT와 달리 건축 설비 중심의 유선 방식입니다. 기존 아파트를 스마트홈으로 개조할 땐 월패드의 RS-485 신호 체계를 분석해 무선 허브와 연동하는 작업이 관건이며, 배선이 바뀌면 통신 불능·장비 손상이 생기므로 주의합니다."}], "quiz": {"q": "국내 아파트 월패드와 각 방 제어기기(조명·난방·가스) 간에 쓰이는 표준 유선 직렬 통신은?", "options": ["Thread", "BLE", "RS-485", "Zigbee"], "ans": 2, "explain": "RS-485는 노이즈에 강하고 다수 연결이 가능해, 국내 건설사들이 월패드 기반 빌트인 기기 제어의 표준으로 채택해 왔습니다."}}, "matter": {"detail": [{"icon": "📘", "label": "개념", "text": "Matter는 통신 프로토콜(주파수)이 아니라, 서로 다른 제조사 기기를 같은 언어로 소통하게 하는 통합 표준입니다. 자체 무선이 아니라 Wi-Fi·Thread 위에서 데이터 형식만 통일해 동작합니다."}, {"icon": "🔧", "label": "현장", "text": "애플·구글·삼성처럼 플랫폼이 달라 연동되지 않던 기기를 하나의 앱으로 통합 제어하게 해줍니다."}, {"icon": "💡", "label": "알아두기", "text": "\"Matter 주파수\"란 말은 틀린 표현입니다. Matter 제품은 하부 통신이 Wi-Fi인지 Thread인지 확인해야 하며, Thread 기반이면 현장에 Thread 보더 라우터가 있어야 합니다."}], "quiz": {"q": "Matter에 대한 설명으로 가장 적절한 것은?", "options": ["900MHz 메시 프로토콜이다", "적외선 통신 방식이다", "제조사 간 호환을 위한 통합 표준이며 Wi-Fi·Thread 위에서 동작한다", "유선 직렬 통신 방식이다"], "ans": 2, "explain": "Matter는 무선 프로토콜이 아니라 제조사 간 상호운용을 위한 표준으로, 실제 전송은 Wi-Fi·Thread 등을 빌려 수행합니다."}}, "mqtt": {"detail": [{"icon": "📘", "label": "개념", "text": "MQTT는 발행(Publish)-구독(Subscribe) 방식의 경량 메시징 프로토콜입니다. 센서가 보낸 데이터를 중앙 브로커(서버)가 받아, 그 정보를 구독하는 기기들에 전달합니다. 적은 대역폭으로 동작해 IoT의 사실상 표준입니다."}, {"icon": "🔧", "label": "현장", "text": "센서 데이터를 서버로 모으고 자동화 명령을 내리는 IoT 플랫폼에 광범위하게 쓰입니다. 대규모 실시간 서비스(예: 배달앱 주문 상태 전송)도 채택합니다."}, {"icon": "💡", "label": "알아두기", "text": "Zigbee·Wi-Fi 같은 물리 통신 위에서 도는 '응용 계층' 프로토콜이라, 신호를 보내는 물리 방식과는 층이 다릅니다. 데이터를 중계할 중앙 브로커(예: Mosquitto)가 필요합니다."}], "quiz": {"q": "센서 데이터를 중앙 브로커로 모아 구독하는 기기들에 실시간 전달하는 IoT 표준 메시징 방식은?", "options": ["RS-485", "MQTT", "Z-Wave", "유선랜"], "ans": 1, "explain": "MQTT는 발행-구독 구조로, 브로커가 센서 데이터를 받아 구독자에게 전달하는 IoT의 대표적 메시징 프로토콜입니다."}}, "coap": {"detail": [{"icon": "📘", "label": "개념", "text": "CoAP는 제약이 많은 저전력·소형 기기를 위한 경량 통신 프로토콜입니다. 웹(HTTP)과 유사한 요청-응답 방식을 쓰되 훨씬 가볍게 만들었고, UDP 기반이라 빠르고 효율적입니다."}, {"icon": "🔧", "label": "현장", "text": "메모리·전력이 부족한 소형 IoT 센서나 제약 환경의 기기 제어에 쓰입니다."}, {"icon": "💡", "label": "알아두기", "text": "같은 응용 계층이지만 방식이 다릅니다 — MQTT가 발행-구독(브로커 경유)이라면, CoAP는 웹처럼 기기에 직접 요청-응답합니다."}], "quiz": {"q": "저전력 소형 IoT 기기용으로, 웹(HTTP)과 유사하나 더 가벼운 요청-응답 프로토콜은?", "options": ["MQTT", "CoAP", "Zigbee", "BLE"], "ans": 1, "explain": "CoAP는 HTTP를 경량화한 요청-응답 방식의 응용 계층 프로토콜로, 제약 많은 소형 기기에 적합합니다."}}};
 function t16ShowDetail(id){
   const dev=(typeof t16Devices!=='undefined'?t16Devices:[]).find(c=>c.id===id);
   const d=(typeof t16Detail!=='undefined'?t16Detail:{})[id];
@@ -7152,17 +7197,17 @@ function t16ShowDetail(id){
       <div class="space-y-3">
         ${d.detail.map(p=>`
           <div>
-            <p class="text-[12px] font-black text-amber-700 mb-0.5">${p.icon} ${p.label}</p>
+            <p class="text-xs font-black text-amber-700 mb-0.5">${p.icon} ${p.label}</p>
             <p class="text-[13px] font-normal text-slate-700 leading-relaxed">${p.text}</p>
           </div>`).join('')}
       </div>
       ${d.quiz ? `<div class="mt-4 pt-3 border-t border-amber-100">
-        <p class="text-[12px] font-black text-amber-700 mb-2">🤔 생각해보기</p>
+        <p class="text-xs font-black text-amber-700 mb-2">🤔 생각해보기</p>
         <p class="text-[13px] font-bold text-slate-800 mb-2 leading-snug">${d.quiz.q}</p>
         <div class="space-y-1.5 mb-2">
           ${d.quiz.options.map((o,oi)=>`<div class="px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-normal text-slate-600">${oi+1}. ${o}</div>`).join('')}
         </div>
-        <button onclick="t16ToggleAnswer('${id}')" id="t16-ans-btn" class="text-[12px] font-black text-amber-600 hover:text-amber-700 transition-colors">정답·해설 보기 ▸</button>
+        <button onclick="t16ToggleAnswer('${id}')" id="t16-ans-btn" class="text-xs font-black text-amber-600 hover:text-amber-700 transition-colors">정답·해설 보기 ▸</button>
         <div id="t16-quiz-ans" class="hidden mt-2 p-2.5 rounded-lg bg-emerald-50 text-[13px] font-normal text-emerald-800 leading-snug"></div>
       </div>` : ''}
     </div>`;
